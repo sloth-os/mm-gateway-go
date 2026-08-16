@@ -1,0 +1,2701 @@
+openapi: 3.1.0
+info:
+  description: "Unified image, video, and music gateway with separate REST APIs."
+  title: mm-gateway
+  version: 0.1.0
+servers:
+- url: /
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                status: ok
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+          description: Gateway is healthy
+      summary: Health
+      tags:
+      - meta
+      - meta
+  /metrics:
+    get:
+      operationId: getMetrics
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Prometheus exposition
+      summary: Metrics
+      tags:
+      - meta
+      - meta
+  /v1/images:
+    post:
+      operationId: createImage
+      parameters:
+      - description: Client-generated key used to safely retry this create request.
+          Reuse with a different body returns 409.
+        explode: false
+        in: header
+        name: Idempotency-Key
+        required: false
+        schema:
+          description: Client-generated key used to safely retry this create request.
+            Reuse with a different body returns 409.
+          maxLength: 255
+          minLength: 1
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImageRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              example:
+                created_at: 2026-08-09T12:00:00Z
+                id: img_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                links:
+                  self: https://gateway.example.test/v1/images/img_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                metadata:
+                  requester: design-tool
+                model: gateway-image-pro
+                object: image
+                outputs: []
+                status: pending
+              schema:
+                $ref: "#/components/schemas/ImageTaskResponse"
+          description: The image task was accepted.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                description: Previously returned ETag; unchanged resources return
+                  304.
+                nullable: true
+                type: string
+              style: simple
+            Idempotency-Replayed:
+              description: true when the response replays an earlier create request.
+              explode: false
+              schema:
+                type: boolean
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                description: Previously returned ETag; unchanged resources return
+                  304.
+                nullable: true
+                type: string
+              style: simple
+            Location:
+              description: Canonical URL of the created task resource.
+              explode: false
+              schema:
+                format: uri
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "409":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Idempotency conflict
+                  value:
+                    code: idempotency_conflict
+                    detail: The Idempotency-Key was already used with a different
+                      request.
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 409
+                    title: Idempotency Conflict
+                    type: urn:mm-gateway:problem:idempotency_conflict
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Idempotency key conflicts with an earlier request.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/images
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Create an image task
+      tags:
+      - images
+  /v1/images/{image_id}:
+    get:
+      operationId: getImage
+      parameters:
+      - description: Opaque image task id.
+        explode: false
+        in: path
+        name: image_id
+        required: true
+        schema:
+          description: Opaque image task id.
+          title: Image Id
+          type: string
+        style: simple
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                completed_at: 2026-08-09T12:00:04Z
+                created_at: 2026-08-09T12:00:00Z
+                id: img_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                links:
+                  self: https://gateway.example.test/v1/images/img_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                metadata:
+                  requester: design-tool
+                model: gateway-image-pro
+                object: image
+                outputs:
+                - mime_type: image/png
+                  revised_prompt: a cyberpunk cat in the rain
+                  uri: https://cdn.example.test/img/abc.png
+                status: succeeded
+                usage:
+                  cost: 0.02
+                  output_count: 1
+              schema:
+                $ref: "#/components/schemas/ImageTaskResponse"
+          description: The latest image task state.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "304":
+          description: The task representation has not changed.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Unknown image task id.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: "/v1/images/{image_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Retrieve an image task
+      tags:
+      - images
+  /v1/models:
+    get:
+      operationId: listModels
+      parameters:
+      - description: Filter models by output modality.
+        explode: true
+        in: query
+        name: modality
+        required: false
+        schema:
+          description: Filter models by output modality.
+          enum:
+          - image
+          - video
+          - music
+          nullable: true
+          type: string
+        style: form
+      - description: "Bearer token: \"Bearer <api-key>\"."
+        explode: false
+        in: header
+        name: Authorization
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      - description: Client-supplied request id (echoed back).
+        explode: false
+        in: header
+        name: X-Request-Id
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                data:
+                - id: gateway-image-pro
+                  modality: image
+                  object: model
+                - id: gateway-video-pro
+                  modality: video
+                  object: model
+                - id: gateway-music-lyria
+                  modality: music
+                  object: model
+                object: list
+              schema:
+                $ref: "#/components/schemas/ModelListResponse"
+          description: Models available to the authenticated client.
+          headers:
+            ETag:
+              description: Version identifier for conditional retrieval.
+              explode: false
+              schema:
+                description: Previously returned ETag; unchanged resources return
+                  304.
+                nullable: true
+                type: string
+              style: simple
+        "304":
+          description: The model catalogue has not changed.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to use any generation service
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/models
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: List Models
+      tags:
+      - meta
+      - meta
+  /v1/music:
+    post:
+      operationId: createMusic
+      parameters:
+      - description: Client-generated key used to safely retry this create request.
+          Reuse with a different body returns 409.
+        explode: false
+        in: header
+        name: Idempotency-Key
+        required: false
+        schema:
+          description: Client-generated key used to safely retry this create request.
+            Reuse with a different body returns 409.
+          maxLength: 255
+          minLength: 1
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MusicRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              example:
+                created_at: 2026-08-09T12:00:00Z
+                id: mus_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                links:
+                  self: https://gateway.example.test/v1/music/mus_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                metadata: {}
+                model: gateway-music-lyria
+                object: music
+                outputs: []
+                status: pending
+              schema:
+                $ref: "#/components/schemas/MusicTaskResponse"
+          description: The music task was accepted.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Idempotency-Replayed:
+              description: true when the response replays an earlier create request.
+              explode: false
+              schema:
+                type: boolean
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Location:
+              description: Canonical URL of the created task resource.
+              explode: false
+              schema:
+                format: uri
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "409":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Idempotency conflict
+                  value:
+                    code: idempotency_conflict
+                    detail: The Idempotency-Key was already used with a different
+                      request.
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 409
+                    title: Idempotency Conflict
+                    type: urn:mm-gateway:problem:idempotency_conflict
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Idempotency key conflicts with an earlier request.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/music
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Create a music task
+      tags:
+      - music
+  /v1/music/{music_id}:
+    get:
+      operationId: getMusic
+      parameters:
+      - description: Opaque music task id.
+        explode: false
+        in: path
+        name: music_id
+        required: true
+        schema:
+          description: Opaque music task id.
+          title: Music Id
+          type: string
+        style: simple
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                completed_at: 2026-08-09T12:00:30Z
+                created_at: 2026-08-09T12:00:00Z
+                id: mus_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                links:
+                  self: https://gateway.example.test/v1/music/mus_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                lyrics: |-
+                  [verse]
+                  Walking down the street...
+                metadata: {}
+                model: gateway-music-lyria
+                object: music
+                outputs:
+                - mime_type: audio/wav
+                  uri: https://cdn.example.test/mus/abc.wav
+                status: succeeded
+                usage:
+                  cost: 0.05
+                  duration_seconds: 30
+                  output_count: 1
+              schema:
+                $ref: "#/components/schemas/MusicTaskResponse"
+          description: The latest music task state.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "304":
+          description: The task representation has not changed.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Unknown music task id.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: "/v1/music/{music_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Retrieve a music task
+      tags:
+      - music
+  /v1/videos:
+    post:
+      operationId: createVideo
+      parameters:
+      - description: Client-generated key used to safely retry this create request.
+          Reuse with a different body returns 409.
+        explode: false
+        in: header
+        name: Idempotency-Key
+        required: false
+        schema:
+          description: Client-generated key used to safely retry this create request.
+            Reuse with a different body returns 409.
+          maxLength: 255
+          minLength: 1
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              example:
+                created_at: 2026-08-09T12:00:00Z
+                id: vid_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                links:
+                  self: https://gateway.example.test/v1/videos/vid_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                metadata: {}
+                model: gateway-video-pro
+                object: video
+                outputs: []
+                status: pending
+              schema:
+                $ref: "#/components/schemas/VideoTaskResponse"
+          description: The video task was accepted.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Idempotency-Replayed:
+              description: true when the response replays an earlier create request.
+              explode: false
+              schema:
+                type: boolean
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Location:
+              description: Canonical URL of the created task resource.
+              explode: false
+              schema:
+                format: uri
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "409":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Idempotency conflict
+                  value:
+                    code: idempotency_conflict
+                    detail: The Idempotency-Key was already used with a different
+                      request.
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 409
+                    title: Idempotency Conflict
+                    type: urn:mm-gateway:problem:idempotency_conflict
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Idempotency key conflicts with an earlier request.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/videos
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Create a video task
+      tags:
+      - videos
+  /v1/videos/{video_id}:
+    get:
+      operationId: getVideo
+      parameters:
+      - description: Opaque video task id.
+        explode: false
+        in: path
+        name: video_id
+        required: true
+        schema:
+          description: Opaque video task id.
+          title: Video Id
+          type: string
+        style: simple
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                completed_at: 2026-08-09T12:00:20Z
+                created_at: 2026-08-09T12:00:00Z
+                id: vid_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                links:
+                  self: https://gateway.example.test/v1/videos/vid_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                metadata: {}
+                model: gateway-video-pro
+                object: video
+                outputs:
+                - cover_uri: https://cdn.example.test/vid/abc-last.png
+                  mime_type: video/mp4
+                  uri: https://cdn.example.test/vid/abc.mp4
+                status: succeeded
+                usage:
+                  cost: 0.08
+                  duration_seconds: 5
+                  output_count: 1
+              schema:
+                $ref: "#/components/schemas/VideoTaskResponse"
+          description: The latest video task state.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "304":
+          description: The task representation has not changed.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Unknown video task id.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: "/v1/videos/{video_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Retrieve a video task
+      tags:
+      - videos
+components:
+  schemas:
+    Dimensions:
+      additionalProperties: false
+      description: Exact output dimensions in pixels.
+      properties:
+        height:
+          minimum: 1.0
+          title: Height
+          type: integer
+        width:
+          minimum: 1.0
+          title: Width
+          type: integer
+      required:
+      - height
+      - width
+      title: Dimensions
+    HealthResponse:
+      additionalProperties: true
+      example:
+        status: ok
+      properties:
+        status:
+          default: ok
+          enum:
+          - ok
+          title: Status
+          type: string
+      title: HealthResponse
+    ImageInput:
+      additionalProperties: false
+      properties:
+        type:
+          enum:
+          - image
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: ImageInput
+    ImageOutput:
+      additionalProperties: true
+      example:
+        mime_type: mime_type
+        revised_prompt: revised_prompt
+        uri: https://openapi-generator.tech
+      properties:
+        mime_type:
+          nullable: true
+          type: string
+        revised_prompt:
+          nullable: true
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - uri
+      title: ImageOutput
+    ImageParameters:
+      additionalProperties: false
+      properties:
+        background:
+          nullable: true
+          type: string
+        compression:
+          maximum: 100.0
+          minimum: 0.0
+          nullable: true
+          type: integer
+        delivery:
+          enum:
+          - remote
+          - inline
+          nullable: true
+          type: string
+        dimensions:
+          allOf:
+          - $ref: "#/components/schemas/Dimensions"
+          nullable: true
+        file_format:
+          nullable: true
+          type: string
+        guidance_scale:
+          minimum: 0.0
+          nullable: true
+          type: number
+        inference_steps:
+          minimum: 1.0
+          nullable: true
+          type: integer
+        negative_prompt:
+          nullable: true
+          type: string
+        output_count:
+          maximum: 16.0
+          minimum: 1.0
+          nullable: true
+          type: integer
+        quality:
+          nullable: true
+          type: string
+        seed:
+          nullable: true
+          type: integer
+        strength:
+          maximum: 1.0
+          minimum: 0.0
+          nullable: true
+          type: number
+        style:
+          nullable: true
+          type: string
+        watermark:
+          nullable: true
+          type: boolean
+      title: ImageParameters
+    ImageRequest:
+      additionalProperties: {}
+      example:
+        input:
+        - text: a cyberpunk cat in the rain
+          type: text
+        metadata:
+          requester: design-tool
+        model: gateway-image-pro
+        parameters:
+          delivery: remote
+          dimensions:
+            height: 1024
+            width: 1024
+          quality: high
+      properties:
+        input:
+          description: Non-empty ordered image-generation inputs.
+          items:
+            $ref: "#/components/schemas/Input_inner"
+          minItems: 1
+          title: Input
+          type: array
+          default: null
+        metadata:
+          additionalProperties: true
+          description: Client-owned metadata returned unchanged with the task.
+          title: Metadata
+          type: object
+        model:
+          description: Model id returned by GET /v1/models.
+          minLength: 1
+          title: Model
+          type: string
+        parameters:
+          $ref: "#/components/schemas/ImageParameters"
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingDirective"
+          nullable: true
+      required:
+      - input
+      - model
+      title: ImageRequest
+    ImageTaskResponse:
+      additionalProperties: {}
+      example:
+        completed_at: 2000-01-23T04:56:07.000+00:00
+        created_at: 2000-01-23T04:56:07.000+00:00
+        error: ""
+        id: id
+        links:
+          self: self
+        metadata:
+          key: ""
+        model: model
+        object: image
+        outputs:
+        - mime_type: mime_type
+          revised_prompt: revised_prompt
+          uri: https://openapi-generator.tech
+        - mime_type: mime_type
+          revised_prompt: revised_prompt
+          uri: https://openapi-generator.tech
+        status: pending
+        usage: ""
+      properties:
+        completed_at:
+          format: date-time
+          nullable: true
+          type: string
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        error:
+          allOf:
+          - $ref: "#/components/schemas/TaskError"
+          nullable: true
+        id:
+          title: Id
+          type: string
+        links:
+          $ref: "#/components/schemas/ResourceLinks"
+        metadata:
+          additionalProperties: true
+          title: Metadata
+          type: object
+        model:
+          title: Model
+          type: string
+        object:
+          default: image
+          enum:
+          - image
+          title: Object
+          type: string
+        outputs:
+          items:
+            $ref: "#/components/schemas/ImageOutput"
+          title: Outputs
+          type: array
+          default: null
+        status:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          title: Status
+          type: string
+        usage:
+          allOf:
+          - $ref: "#/components/schemas/Usage"
+          nullable: true
+      required:
+      - created_at
+      - id
+      - links
+      - model
+      - status
+      title: ImageTaskResponse
+    LyricsInput:
+      additionalProperties: false
+      properties:
+        text:
+          minLength: 1
+          title: Text
+          type: string
+        type:
+          enum:
+          - lyrics
+          title: Type
+          type: string
+      required:
+      - text
+      - type
+      title: LyricsInput
+    ModelEntry:
+      additionalProperties: true
+      example:
+        id: id
+        modality: image
+        object: model
+      properties:
+        id:
+          title: Id
+          type: string
+        modality:
+          enum:
+          - image
+          - video
+          - music
+          title: Modality
+          type: string
+        object:
+          default: model
+          enum:
+          - model
+          title: Object
+          type: string
+      required:
+      - id
+      - modality
+      title: ModelEntry
+    ModelListResponse:
+      additionalProperties: true
+      example:
+        data:
+        - id: id
+          modality: image
+          object: model
+        - id: id
+          modality: image
+          object: model
+        object: list
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/ModelEntry"
+          title: Data
+          type: array
+          default: null
+        object:
+          default: list
+          enum:
+          - list
+          title: Object
+          type: string
+      required:
+      - data
+      title: ModelListResponse
+    MusicAudioInput:
+      additionalProperties: false
+      properties:
+        role:
+          default: reference_audio
+          enum:
+          - reference_audio
+          - continuation_audio
+          title: Role
+          type: string
+        type:
+          enum:
+          - audio
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: MusicAudioInput
+    MusicImageInput:
+      additionalProperties: false
+      properties:
+        role:
+          default: reference_image
+          enum:
+          - reference_image
+          title: Role
+          type: string
+        type:
+          enum:
+          - image
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: MusicImageInput
+    MusicOutput:
+      additionalProperties: true
+      example:
+        mime_type: mime_type
+        uri: https://openapi-generator.tech
+      properties:
+        mime_type:
+          nullable: true
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - uri
+      title: MusicOutput
+    MusicParameters:
+      additionalProperties: false
+      properties:
+        bitrate_kbps:
+          minimum: 8.0
+          nullable: true
+          type: integer
+        bpm:
+          minimum: 1.0
+          nullable: true
+          type: integer
+        duration_seconds:
+          exclusiveMinimum: true
+          minimum: 0.0
+          nullable: true
+          type: number
+        enhance_lyrics:
+          nullable: true
+          type: boolean
+        file_format:
+          nullable: true
+          type: string
+        guidance_scale:
+          minimum: 0.0
+          nullable: true
+          type: number
+        inference_steps:
+          minimum: 1.0
+          nullable: true
+          type: integer
+        instrumental:
+          nullable: true
+          type: boolean
+        key:
+          nullable: true
+          type: string
+        negative_prompt:
+          nullable: true
+          type: string
+        novelty:
+          maximum: 1.0
+          minimum: 0.0
+          nullable: true
+          type: number
+        output_count:
+          maximum: 16.0
+          minimum: 1.0
+          nullable: true
+          type: integer
+        provenance:
+          nullable: true
+          type: boolean
+        reference_audio_strength:
+          maximum: 1.0
+          minimum: 0.0
+          nullable: true
+          type: number
+        respect_section_durations:
+          nullable: true
+          type: boolean
+        sample_rate_hz:
+          minimum: 8000.0
+          nullable: true
+          type: integer
+        scale:
+          nullable: true
+          type: string
+        seed:
+          nullable: true
+          type: integer
+        style:
+          nullable: true
+          type: string
+        style_strength:
+          maximum: 1.0
+          minimum: 0.0
+          nullable: true
+          type: number
+        time_signature:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        vocal_gender:
+          nullable: true
+          type: string
+        vocal_language:
+          nullable: true
+          type: string
+        voice:
+          nullable: true
+          type: string
+      title: MusicParameters
+    MusicRequest:
+      additionalProperties: {}
+      example:
+        input:
+        - text: an upbeat pop song about summer
+          type: text
+        model: gateway-music-lyria
+        parameters:
+          bpm: 120
+          duration_seconds: 30
+          file_format: wav
+      properties:
+        input:
+          description: Non-empty ordered music-generation inputs.
+          items:
+            $ref: "#/components/schemas/Input_inner_1"
+          minItems: 1
+          title: Input
+          type: array
+          default: null
+        metadata:
+          additionalProperties: true
+          description: Client-owned metadata returned unchanged with the task.
+          title: Metadata
+          type: object
+        model:
+          description: Model id returned by GET /v1/models.
+          minLength: 1
+          title: Model
+          type: string
+        parameters:
+          $ref: "#/components/schemas/MusicParameters"
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingDirective"
+          nullable: true
+      required:
+      - input
+      - model
+      title: MusicRequest
+    MusicTaskResponse:
+      additionalProperties: {}
+      example:
+        completed_at: 2000-01-23T04:56:07.000+00:00
+        created_at: 2000-01-23T04:56:07.000+00:00
+        error: ""
+        id: id
+        links:
+          self: self
+        lyrics: lyrics
+        metadata:
+          key: ""
+        model: model
+        object: music
+        outputs:
+        - mime_type: mime_type
+          uri: https://openapi-generator.tech
+        - mime_type: mime_type
+          uri: https://openapi-generator.tech
+        status: pending
+        usage: ""
+      properties:
+        completed_at:
+          format: date-time
+          nullable: true
+          type: string
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        error:
+          allOf:
+          - $ref: "#/components/schemas/TaskError"
+          nullable: true
+        id:
+          title: Id
+          type: string
+        links:
+          $ref: "#/components/schemas/ResourceLinks"
+        lyrics:
+          nullable: true
+          type: string
+        metadata:
+          additionalProperties: true
+          title: Metadata
+          type: object
+        model:
+          title: Model
+          type: string
+        object:
+          default: music
+          enum:
+          - music
+          title: Object
+          type: string
+        outputs:
+          items:
+            $ref: "#/components/schemas/MusicOutput"
+          title: Outputs
+          type: array
+          default: null
+        status:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          title: Status
+          type: string
+        usage:
+          allOf:
+          - $ref: "#/components/schemas/Usage"
+          nullable: true
+      required:
+      - created_at
+      - id
+      - links
+      - model
+      - status
+      title: MusicTaskResponse
+    ProblemDetail:
+      additionalProperties: {}
+      description: RFC 9457 problem details with stable gateway extensions.
+      properties:
+        code:
+          description: Stable machine-readable gateway error code.
+          title: Code
+          type: string
+        detail:
+          description: Human-readable detail for this occurrence.
+          title: Detail
+          type: string
+        errors:
+          description: "Field-level validation errors, when applicable."
+          items:
+            additionalProperties: true
+            type: object
+          nullable: true
+          type: array
+          default: null
+        instance:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        request_id:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        status:
+          description: HTTP response status code.
+          maximum: 599
+          minimum: 400
+          title: Status
+          type: integer
+        title:
+          description: "Short, stable summary of the problem type."
+          title: Title
+          type: string
+        type:
+          description: URI identifying the problem type.
+          title: Type
+          type: string
+      required:
+      - code
+      - detail
+      - status
+      - title
+      - type
+      title: ProblemDetail
+    ResourceLinks:
+      additionalProperties: true
+      example:
+        self: self
+      properties:
+        self:
+          description: Canonical resource URL.
+          title: Self
+          type: string
+      required:
+      - self
+      title: ResourceLinks
+    RoutingDirective:
+      additionalProperties: false
+      description: "Select a server-defined, provider-neutral routing policy."
+      properties:
+        profile:
+          description: "Gateway-defined routing profile, such as `quality`, `fast`,\
+            \ or `eu`. It never names a provider or backend."
+          minLength: 1
+          title: Profile
+          type: string
+      required:
+      - profile
+      title: RoutingDirective
+    TaskError:
+      additionalProperties: true
+      properties:
+        code:
+          title: Code
+          type: string
+        message:
+          title: Message
+          type: string
+      required:
+      - code
+      - message
+      title: TaskError
+    TextInput:
+      additionalProperties: false
+      properties:
+        text:
+          minLength: 1
+          title: Text
+          type: string
+        type:
+          enum:
+          - text
+          title: Type
+          type: string
+      required:
+      - text
+      - type
+      title: TextInput
+    Usage:
+      additionalProperties: true
+      description: Provider-neutral usage fields shared by all three modalities.
+      properties:
+        cost:
+          nullable: true
+          type: number
+        duration_seconds:
+          nullable: true
+          type: number
+        input_tokens:
+          nullable: true
+          type: integer
+        output_count:
+          nullable: true
+          type: integer
+        output_tokens:
+          nullable: true
+          type: integer
+        total_tokens:
+          nullable: true
+          type: integer
+      title: Usage
+    VideoAudioInput:
+      additionalProperties: false
+      properties:
+        role:
+          default: reference_audio
+          enum:
+          - reference_audio
+          title: Role
+          type: string
+        type:
+          enum:
+          - audio
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: VideoAudioInput
+    VideoImageInput:
+      additionalProperties: false
+      properties:
+        role:
+          default: first_frame
+          enum:
+          - first_frame
+          - last_frame
+          - reference_image
+          title: Role
+          type: string
+        type:
+          enum:
+          - image
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: VideoImageInput
+    VideoInput:
+      additionalProperties: false
+      properties:
+        role:
+          default: reference_video
+          enum:
+          - reference_video
+          title: Role
+          type: string
+        type:
+          enum:
+          - video
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: VideoInput
+    VideoOutput:
+      additionalProperties: true
+      example:
+        cover_uri: https://openapi-generator.tech
+        mime_type: mime_type
+        uri: https://openapi-generator.tech
+      properties:
+        cover_uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          nullable: true
+          type: string
+        mime_type:
+          nullable: true
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - uri
+      title: VideoOutput
+    VideoParameters:
+      additionalProperties: false
+      properties:
+        camera_motion:
+          enum:
+          - auto
+          - fixed
+          nullable: true
+          type: string
+        dimensions:
+          allOf:
+          - $ref: "#/components/schemas/Dimensions"
+          nullable: true
+        duration_seconds:
+          exclusiveMinimum: true
+          minimum: 0.0
+          nullable: true
+          type: number
+        enhance_prompt:
+          nullable: true
+          type: boolean
+        file_format:
+          nullable: true
+          type: string
+        fps:
+          minimum: 1.0
+          nullable: true
+          type: integer
+        frame_count:
+          minimum: 1.0
+          nullable: true
+          type: integer
+        guidance_scale:
+          minimum: 0.0
+          nullable: true
+          type: number
+        include_audio:
+          nullable: true
+          type: boolean
+        include_last_frame:
+          nullable: true
+          type: boolean
+        motion_intensity:
+          maximum: 255.0
+          minimum: 0.0
+          nullable: true
+          type: integer
+        negative_prompt:
+          nullable: true
+          type: string
+        seed:
+          nullable: true
+          type: integer
+        watermark:
+          nullable: true
+          type: boolean
+      title: VideoParameters
+    VideoRequest:
+      additionalProperties: {}
+      example:
+        input:
+        - text: a cinematic drone shot over mountains
+          type: text
+        model: gateway-video-pro
+        parameters:
+          dimensions:
+            height: 720
+            width: 1280
+          duration_seconds: 5
+      properties:
+        input:
+          description: Non-empty ordered video-generation inputs.
+          items:
+            $ref: "#/components/schemas/Input_inner_2"
+          minItems: 1
+          title: Input
+          type: array
+          default: null
+        metadata:
+          additionalProperties: true
+          description: Client-owned metadata returned unchanged with the task.
+          title: Metadata
+          type: object
+        model:
+          description: Model id returned by GET /v1/models.
+          minLength: 1
+          title: Model
+          type: string
+        parameters:
+          $ref: "#/components/schemas/VideoParameters"
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingDirective"
+          nullable: true
+      required:
+      - input
+      - model
+      title: VideoRequest
+    VideoTaskResponse:
+      additionalProperties: {}
+      example:
+        completed_at: 2000-01-23T04:56:07.000+00:00
+        created_at: 2000-01-23T04:56:07.000+00:00
+        error: ""
+        id: id
+        links:
+          self: self
+        metadata:
+          key: ""
+        model: model
+        object: video
+        outputs:
+        - cover_uri: https://openapi-generator.tech
+          mime_type: mime_type
+          uri: https://openapi-generator.tech
+        - cover_uri: https://openapi-generator.tech
+          mime_type: mime_type
+          uri: https://openapi-generator.tech
+        status: pending
+        usage: ""
+      properties:
+        completed_at:
+          format: date-time
+          nullable: true
+          type: string
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        error:
+          allOf:
+          - $ref: "#/components/schemas/TaskError"
+          nullable: true
+        id:
+          title: Id
+          type: string
+        links:
+          $ref: "#/components/schemas/ResourceLinks"
+        metadata:
+          additionalProperties: true
+          title: Metadata
+          type: object
+        model:
+          title: Model
+          type: string
+        object:
+          default: video
+          enum:
+          - video
+          title: Object
+          type: string
+        outputs:
+          items:
+            $ref: "#/components/schemas/VideoOutput"
+          title: Outputs
+          type: array
+          default: null
+        status:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          title: Status
+          type: string
+        usage:
+          allOf:
+          - $ref: "#/components/schemas/Usage"
+          nullable: true
+      required:
+      - created_at
+      - id
+      - links
+      - model
+      - status
+      title: VideoTaskResponse
+    Input_inner:
+      discriminator:
+        mapping:
+          image: "#/components/schemas/ImageInput"
+          text: "#/components/schemas/TextInput"
+        propertyName: type
+      oneOf:
+      - $ref: "#/components/schemas/TextInput"
+      - $ref: "#/components/schemas/ImageInput"
+    Input_inner_1:
+      discriminator:
+        mapping:
+          audio: "#/components/schemas/MusicAudioInput"
+          image: "#/components/schemas/MusicImageInput"
+          lyrics: "#/components/schemas/LyricsInput"
+          text: "#/components/schemas/TextInput"
+        propertyName: type
+      oneOf:
+      - $ref: "#/components/schemas/TextInput"
+      - $ref: "#/components/schemas/LyricsInput"
+      - $ref: "#/components/schemas/MusicImageInput"
+      - $ref: "#/components/schemas/MusicAudioInput"
+    Input_inner_2:
+      discriminator:
+        mapping:
+          audio: "#/components/schemas/VideoAudioInput"
+          image: "#/components/schemas/VideoImageInput"
+          text: "#/components/schemas/TextInput"
+          video: "#/components/schemas/VideoInput"
+        propertyName: type
+      oneOf:
+      - $ref: "#/components/schemas/TextInput"
+      - $ref: "#/components/schemas/VideoImageInput"
+      - $ref: "#/components/schemas/VideoAudioInput"
+      - $ref: "#/components/schemas/VideoInput"
+  securitySchemes:
+    BearerAuth:
+      bearerFormat: API key
+      description: "Front-end API key sent as \"Authorization: Bearer <token>\"."
+      scheme: bearer
+      type: http
