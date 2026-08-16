@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Input** | [**[]InputInner**](InputInner.md) | Non-empty ordered image-generation inputs. | 
 **Metadata** | Pointer to **map[string]interface{}** | Client-owned metadata returned unchanged with the task. | [optional] 
-**Model** | **string** | Model id returned by GET /v1/models. | 
+**Model** | Pointer to **NullableString** | Model id returned by GET /v1/models, or omit / set to &#x60;auto&#x60; to let the gateway auto-route to a backend whose limits fit the request&#39;s input (modalities, dimensions, duration, ...). | [optional] 
 **Parameters** | Pointer to [**ImageParameters**](ImageParameters.md) |  | [optional] 
 **Routing** | Pointer to [**NullableRoutingDirective**](RoutingDirective.md) |  | [optional] 
 
@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 
 ### NewImageRequest
 
-`func NewImageRequest(input []InputInner, model string, ) *ImageRequest`
+`func NewImageRequest(input []InputInner, ) *ImageRequest`
 
 NewImageRequest instantiates a new ImageRequest object
 This constructor will assign default values to properties that have it defined,
@@ -93,7 +93,22 @@ and a boolean to check if the value has been set.
 
 SetModel sets Model field to given value.
 
+### HasModel
 
+`func (o *ImageRequest) HasModel() bool`
+
+HasModel returns a boolean if a field has been set.
+
+### SetModelNil
+
+`func (o *ImageRequest) SetModelNil(b bool)`
+
+ SetModelNil sets the value for Model to be an explicit nil
+
+### UnsetModel
+`func (o *ImageRequest) UnsetModel()`
+
+UnsetModel ensures that no value is present for Model, not even an explicit nil
 ### GetParameters
 
 `func (o *ImageRequest) GetParameters() ImageParameters`

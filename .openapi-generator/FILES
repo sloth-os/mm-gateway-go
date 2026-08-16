@@ -23,6 +23,8 @@ docs/InputInner2.md
 docs/LyricsInput.md
 docs/MetaAPI.md
 docs/ModelEntry.md
+docs/ModelLimitsEntry.md
+docs/ModelLimitsListResponse.md
 docs/ModelListResponse.md
 docs/MusicAPI.md
 docs/MusicAudioInput.md
@@ -60,6 +62,8 @@ model_input_inner_1.go
 model_input_inner_2.go
 model_lyrics_input.go
 model_model_entry.go
+model_model_limits_entry.go
+model_model_limits_list_response.go
 model_model_list_response.go
 model_music_audio_input.go
 model_music_image_input.go

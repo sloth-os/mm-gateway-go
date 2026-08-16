@@ -28,7 +28,7 @@ import (
 )
 
 func main() {
-	musicRequest := *openapiclient.NewMusicRequest([]openapiclient.InputInner1{openapiclient.Input_inner_1{LyricsInput: openapiclient.NewLyricsInput("Text_example", "Type_example")}}, "Model_example") // MusicRequest | 
+	musicRequest := *openapiclient.NewMusicRequest([]openapiclient.InputInner1{openapiclient.Input_inner_1{LyricsInput: openapiclient.NewLyricsInput("Text_example", "Type_example")}}) // MusicRequest | 
 	idempotencyKey := "idempotencyKey_example" // string | Client-generated key used to safely retry this create request. Reuse with a different body returns 409. (optional)
 
 	configuration := openapiclient.NewConfiguration()

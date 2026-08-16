@@ -77,6 +77,8 @@ Class | Method | HTTP request | Description
 *MetaAPI* | [**GetHealth_0**](docs/MetaAPI.md#gethealth_0) | **Get** /health | Health
 *MetaAPI* | [**GetMetrics**](docs/MetaAPI.md#getmetrics) | **Get** /metrics | Metrics
 *MetaAPI* | [**GetMetrics_0**](docs/MetaAPI.md#getmetrics_0) | **Get** /metrics | Metrics
+*MetaAPI* | [**ListModelLimits**](docs/MetaAPI.md#listmodellimits) | **Get** /v1/models/limits | List Model Limits
+*MetaAPI* | [**ListModelLimits_0**](docs/MetaAPI.md#listmodellimits_0) | **Get** /v1/models/limits | List Model Limits
 *MetaAPI* | [**ListModels**](docs/MetaAPI.md#listmodels) | **Get** /v1/models | List Models
 *MetaAPI* | [**ListModels_0**](docs/MetaAPI.md#listmodels_0) | **Get** /v1/models | List Models
 *MusicAPI* | [**CreateMusic**](docs/MusicAPI.md#createmusic) | **Post** /v1/music | Create a music task
@@ -99,6 +101,8 @@ Class | Method | HTTP request | Description
  - [InputInner2](docs/InputInner2.md)
  - [LyricsInput](docs/LyricsInput.md)
  - [ModelEntry](docs/ModelEntry.md)
+ - [ModelLimitsEntry](docs/ModelLimitsEntry.md)
+ - [ModelLimitsListResponse](docs/ModelLimitsListResponse.md)
  - [ModelListResponse](docs/ModelListResponse.md)
  - [MusicAudioInput](docs/MusicAudioInput.md)
  - [MusicImageInput](docs/MusicImageInput.md)

@@ -28,7 +28,7 @@ import (
 )
 
 func main() {
-	imageRequest := *openapiclient.NewImageRequest([]openapiclient.InputInner{openapiclient.Input_inner{ImageInput: openapiclient.NewImageInput("Type_example", "Uri_example")}}, "Model_example") // ImageRequest | 
+	imageRequest := *openapiclient.NewImageRequest([]openapiclient.InputInner{openapiclient.Input_inner{ImageInput: openapiclient.NewImageInput("Type_example", "Uri_example")}}) // ImageRequest | 
 	idempotencyKey := "idempotencyKey_example" // string | Client-generated key used to safely retry this create request. Reuse with a different body returns 409. (optional)
 
 	configuration := openapiclient.NewConfiguration()

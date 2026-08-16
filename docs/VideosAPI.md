@@ -28,7 +28,7 @@ import (
 )
 
 func main() {
-	videoRequest := *openapiclient.NewVideoRequest([]openapiclient.InputInner2{openapiclient.Input_inner_2{TextInput: openapiclient.NewTextInput("Text_example", "Type_example")}}, "Model_example") // VideoRequest | 
+	videoRequest := *openapiclient.NewVideoRequest([]openapiclient.InputInner2{openapiclient.Input_inner_2{TextInput: openapiclient.NewTextInput("Text_example", "Type_example")}}) // VideoRequest | 
 	idempotencyKey := "idempotencyKey_example" // string | Client-generated key used to safely retry this create request. Reuse with a different body returns 409. (optional)
 
 	configuration := openapiclient.NewConfiguration()

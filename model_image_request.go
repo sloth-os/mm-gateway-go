@@ -24,8 +24,8 @@ type ImageRequest struct {
 	Input []InputInner `json:"input"`
 	// Client-owned metadata returned unchanged with the task.
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
-	// Model id returned by GET /v1/models.
-	Model string `json:"model"`
+	// Model id returned by GET /v1/models, or omit / set to `auto` to let the gateway auto-route to a backend whose limits fit the request's input (modalities, dimensions, duration, ...).
+	Model NullableString `json:"model,omitempty"`
 	Parameters *ImageParameters `json:"parameters,omitempty"`
 	Routing NullableRoutingDirective `json:"routing,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -37,10 +37,9 @@ type _ImageRequest ImageRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewImageRequest(input []InputInner, model string) *ImageRequest {
+func NewImageRequest(input []InputInner) *ImageRequest {
 	this := ImageRequest{}
 	this.Input = input
-	this.Model = model
 	return &this
 }
 
@@ -108,28 +107,46 @@ func (o *ImageRequest) SetMetadata(v map[string]interface{}) {
 	o.Metadata = v
 }
 
-// GetModel returns the Model field value
+// GetModel returns the Model field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ImageRequest) GetModel() string {
-	if o == nil {
+	if o == nil || IsNil(o.Model.Get()) {
 		var ret string
 		return ret
 	}
-
-	return o.Model
+	return *o.Model.Get()
 }
 
-// GetModelOk returns a tuple with the Model field value
+// GetModelOk returns a tuple with the Model field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ImageRequest) GetModelOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Model, true
+	return o.Model.Get(), o.Model.IsSet()
 }
 
-// SetModel sets field value
+// HasModel returns a boolean if a field has been set.
+func (o *ImageRequest) HasModel() bool {
+	if o != nil && o.Model.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetModel gets a reference to the given NullableString and assigns it to the Model field.
 func (o *ImageRequest) SetModel(v string) {
-	o.Model = v
+	o.Model.Set(&v)
+}
+// SetModelNil sets the value for Model to be an explicit nil
+func (o *ImageRequest) SetModelNil() {
+	o.Model.Set(nil)
+}
+
+// UnsetModel ensures that no value is present for Model, not even an explicit nil
+func (o *ImageRequest) UnsetModel() {
+	o.Model.Unset()
 }
 
 // GetParameters returns the Parameters field value if set, zero value otherwise.
@@ -220,7 +237,9 @@ func (o ImageRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Metadata) {
 		toSerialize["metadata"] = o.Metadata
 	}
-	toSerialize["model"] = o.Model
+	if o.Model.IsSet() {
+		toSerialize["model"] = o.Model.Get()
+	}
 	if !IsNil(o.Parameters) {
 		toSerialize["parameters"] = o.Parameters
 	}
@@ -241,7 +260,6 @@ func (o *ImageRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"input",
-		"model",
 	}
 
 	allProperties := make(map[string]interface{})

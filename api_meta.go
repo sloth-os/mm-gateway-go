@@ -410,6 +410,470 @@ func (a *MetaAPIService) GetMetrics_2Execute(r ApiGetMetrics_0Request) (string, 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiListModelLimitsRequest struct {
+	ctx context.Context
+	ApiService *MetaAPIService
+	modality *string
+	authorization *string
+	xRequestId *string
+	ifNoneMatch *string
+}
+
+// Filter models by output modality.
+func (r ApiListModelLimitsRequest) Modality(modality string) ApiListModelLimitsRequest {
+	r.modality = &modality
+	return r
+}
+
+// Bearer token: \&quot;Bearer &lt;api-key&gt;\&quot;.
+func (r ApiListModelLimitsRequest) Authorization(authorization string) ApiListModelLimitsRequest {
+	r.authorization = &authorization
+	return r
+}
+
+// Client-supplied request id (echoed back).
+func (r ApiListModelLimitsRequest) XRequestId(xRequestId string) ApiListModelLimitsRequest {
+	r.xRequestId = &xRequestId
+	return r
+}
+
+// Previously returned ETag; unchanged resources return 304.
+func (r ApiListModelLimitsRequest) IfNoneMatch(ifNoneMatch string) ApiListModelLimitsRequest {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiListModelLimitsRequest) Execute() (*ModelLimitsListResponse, *http.Response, error) {
+	return r.ApiService.ListModelLimitsExecute(r)
+}
+
+/*
+ListModelLimits List Model Limits
+
+List usable models with their documented input/output limits.
+
+Use this to pick a model and craft a prompt that fits: each entry's
+``limits`` carries the input modalities accepted, the max prompt length,
+the max output count, supported sizes/durations, and per-role support
+flags (image-to-image, first/last frame, reference audio, lyrics, ...).
+The same catalogue drives auto-routing when a request omits ``model``.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListModelLimitsRequest
+*/
+func (a *MetaAPIService) ListModelLimits(ctx context.Context) ApiListModelLimitsRequest {
+	return ApiListModelLimitsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ModelLimitsListResponse
+func (a *MetaAPIService) ListModelLimitsExecute(r ApiListModelLimitsRequest) (*ModelLimitsListResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ModelLimitsListResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetaAPIService.ListModelLimits")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/models/limits"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.modality != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "modality", r.modality, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "application/problem+json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.authorization != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Authorization", r.authorization, "simple", "")
+	}
+	if r.xRequestId != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Request-Id", r.xRequestId, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 504 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListModelLimits_0Request struct {
+	ctx context.Context
+	ApiService *MetaAPIService
+	modality *string
+	authorization *string
+	xRequestId *string
+	ifNoneMatch *string
+}
+
+// Filter models by output modality.
+func (r ApiListModelLimits_0Request) Modality(modality string) ApiListModelLimits_0Request {
+	r.modality = &modality
+	return r
+}
+
+// Bearer token: \&quot;Bearer &lt;api-key&gt;\&quot;.
+func (r ApiListModelLimits_0Request) Authorization(authorization string) ApiListModelLimits_0Request {
+	r.authorization = &authorization
+	return r
+}
+
+// Client-supplied request id (echoed back).
+func (r ApiListModelLimits_0Request) XRequestId(xRequestId string) ApiListModelLimits_0Request {
+	r.xRequestId = &xRequestId
+	return r
+}
+
+// Previously returned ETag; unchanged resources return 304.
+func (r ApiListModelLimits_0Request) IfNoneMatch(ifNoneMatch string) ApiListModelLimits_0Request {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiListModelLimits_0Request) Execute() (*ModelLimitsListResponse, *http.Response, error) {
+	return r.ApiService.ListModelLimits_3Execute(r)
+}
+
+/*
+ListModelLimits_0 List Model Limits
+
+List usable models with their documented input/output limits.
+
+Use this to pick a model and craft a prompt that fits: each entry's
+``limits`` carries the input modalities accepted, the max prompt length,
+the max output count, supported sizes/durations, and per-role support
+flags (image-to-image, first/last frame, reference audio, lyrics, ...).
+The same catalogue drives auto-routing when a request omits ``model``.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListModelLimits_0Request
+*/
+func (a *MetaAPIService) ListModelLimits_3(ctx context.Context) ApiListModelLimits_0Request {
+	return ApiListModelLimits_0Request{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ModelLimitsListResponse
+func (a *MetaAPIService) ListModelLimits_3Execute(r ApiListModelLimits_0Request) (*ModelLimitsListResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ModelLimitsListResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetaAPIService.ListModelLimits_3")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/models/limits"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.modality != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "modality", r.modality, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "application/problem+json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.authorization != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Authorization", r.authorization, "simple", "")
+	}
+	if r.xRequestId != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Request-Id", r.xRequestId, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 502 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 504 {
+			var v ProblemDetail
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiListModelsRequest struct {
 	ctx context.Context
 	ApiService *MetaAPIService
@@ -668,7 +1132,7 @@ func (r ApiListModels_0Request) IfNoneMatch(ifNoneMatch string) ApiListModels_0R
 }
 
 func (r ApiListModels_0Request) Execute() (*ModelListResponse, *http.Response, error) {
-	return r.ApiService.ListModels_3Execute(r)
+	return r.ApiService.ListModels_4Execute(r)
 }
 
 /*
@@ -677,7 +1141,7 @@ ListModels_0 List Models
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListModels_0Request
 */
-func (a *MetaAPIService) ListModels_3(ctx context.Context) ApiListModels_0Request {
+func (a *MetaAPIService) ListModels_4(ctx context.Context) ApiListModels_0Request {
 	return ApiListModels_0Request{
 		ApiService: a,
 		ctx: ctx,
@@ -686,7 +1150,7 @@ func (a *MetaAPIService) ListModels_3(ctx context.Context) ApiListModels_0Reques
 
 // Execute executes the request
 //  @return ModelListResponse
-func (a *MetaAPIService) ListModels_3Execute(r ApiListModels_0Request) (*ModelListResponse, *http.Response, error) {
+func (a *MetaAPIService) ListModels_4Execute(r ApiListModels_0Request) (*ModelListResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -694,7 +1158,7 @@ func (a *MetaAPIService) ListModels_3Execute(r ApiListModels_0Request) (*ModelLi
 		localVarReturnValue  *ModelListResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetaAPIService.ListModels_3")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetaAPIService.ListModels_4")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}

@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Input** | [**[]InputInner2**](InputInner2.md) | Non-empty ordered video-generation inputs. | 
 **Metadata** | Pointer to **map[string]interface{}** | Client-owned metadata returned unchanged with the task. | [optional] 
-**Model** | **string** | Model id returned by GET /v1/models. | 
+**Model** | Pointer to **NullableString** | Model id returned by GET /v1/models, or omit / set to &#x60;auto&#x60; to let the gateway auto-route to a backend whose limits fit the request&#39;s input (modalities, dimensions, duration, ...). | [optional] 
 **Parameters** | Pointer to [**VideoParameters**](VideoParameters.md) |  | [optional] 
 **Routing** | Pointer to [**NullableRoutingDirective**](RoutingDirective.md) |  | [optional] 
 
@@ -14,7 +14,7 @@ Name | Type | Description | Notes
 
 ### NewVideoRequest
 
-`func NewVideoRequest(input []InputInner2, model string, ) *VideoRequest`
+`func NewVideoRequest(input []InputInner2, ) *VideoRequest`
 
 NewVideoRequest instantiates a new VideoRequest object
 This constructor will assign default values to properties that have it defined,
@@ -93,7 +93,22 @@ and a boolean to check if the value has been set.
 
 SetModel sets Model field to given value.
 
+### HasModel
 
+`func (o *VideoRequest) HasModel() bool`
+
+HasModel returns a boolean if a field has been set.
+
+### SetModelNil
+
+`func (o *VideoRequest) SetModelNil(b bool)`
+
+ SetModelNil sets the value for Model to be an explicit nil
+
+### UnsetModel
+`func (o *VideoRequest) UnsetModel()`
+
+UnsetModel ensures that no value is present for Model, not even an explicit nil
 ### GetParameters
 
 `func (o *VideoRequest) GetParameters() VideoParameters`
