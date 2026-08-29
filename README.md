@@ -83,6 +83,13 @@ Class | Method | HTTP request | Description
 *MetaAPI* | [**ListModels_0**](docs/MetaAPI.md#listmodels_0) | **Get** /v1/models | List Models
 *MusicAPI* | [**CreateMusic**](docs/MusicAPI.md#createmusic) | **Post** /v1/music | Create a music task
 *MusicAPI* | [**GetMusic**](docs/MusicAPI.md#getmusic) | **Get** /v1/music/{music_id} | Retrieve a music task
+*ProxyAPI* | [**ProxyRequestDelete**](docs/ProxyAPI.md#proxyrequestdelete) | **Delete** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*ProxyAPI* | [**ProxyRequestGet**](docs/ProxyAPI.md#proxyrequestget) | **Get** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*ProxyAPI* | [**ProxyRequestHead**](docs/ProxyAPI.md#proxyrequesthead) | **Head** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*ProxyAPI* | [**ProxyRequestOptions**](docs/ProxyAPI.md#proxyrequestoptions) | **Options** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*ProxyAPI* | [**ProxyRequestPatch**](docs/ProxyAPI.md#proxyrequestpatch) | **Patch** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*ProxyAPI* | [**ProxyRequestPost**](docs/ProxyAPI.md#proxyrequestpost) | **Post** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*ProxyAPI* | [**ProxyRequestPut**](docs/ProxyAPI.md#proxyrequestput) | **Put** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
 *VideosAPI* | [**CreateVideo**](docs/VideosAPI.md#createvideo) | **Post** /v1/videos | Create a video task
 *VideosAPI* | [**GetVideo**](docs/VideosAPI.md#getvideo) | **Get** /v1/videos/{video_id} | Retrieve a video task
 
