@@ -21,7 +21,6 @@ paths:
       summary: Health
       tags:
       - meta
-      - meta
   /metrics:
     get:
       operationId: getMetrics
@@ -34,7 +33,6 @@ paths:
           description: Prometheus exposition
       summary: Metrics
       tags:
-      - meta
       - meta
   /proxy/{domain}/{path}:
     delete:
@@ -2018,7 +2016,6 @@ paths:
       summary: List Models
       tags:
       - meta
-      - meta
   /v1/models/limits:
     get:
       description: |-
@@ -2276,7 +2273,6 @@ paths:
       - BearerAuth: []
       summary: List Model Limits
       tags:
-      - meta
       - meta
   /v1/music:
     post:

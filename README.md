@@ -74,13 +74,9 @@ Class | Method | HTTP request | Description
 *ImagesAPI* | [**CreateImage**](docs/ImagesAPI.md#createimage) | **Post** /v1/images | Create an image task
 *ImagesAPI* | [**GetImage**](docs/ImagesAPI.md#getimage) | **Get** /v1/images/{image_id} | Retrieve an image task
 *MetaAPI* | [**GetHealth**](docs/MetaAPI.md#gethealth) | **Get** /health | Health
-*MetaAPI* | [**GetHealth_0**](docs/MetaAPI.md#gethealth_0) | **Get** /health | Health
 *MetaAPI* | [**GetMetrics**](docs/MetaAPI.md#getmetrics) | **Get** /metrics | Metrics
-*MetaAPI* | [**GetMetrics_0**](docs/MetaAPI.md#getmetrics_0) | **Get** /metrics | Metrics
 *MetaAPI* | [**ListModelLimits**](docs/MetaAPI.md#listmodellimits) | **Get** /v1/models/limits | List Model Limits
-*MetaAPI* | [**ListModelLimits_0**](docs/MetaAPI.md#listmodellimits_0) | **Get** /v1/models/limits | List Model Limits
 *MetaAPI* | [**ListModels**](docs/MetaAPI.md#listmodels) | **Get** /v1/models | List Models
-*MetaAPI* | [**ListModels_0**](docs/MetaAPI.md#listmodels_0) | **Get** /v1/models | List Models
 *MusicAPI* | [**CreateMusic**](docs/MusicAPI.md#createmusic) | **Post** /v1/music | Create a music task
 *MusicAPI* | [**GetMusic**](docs/MusicAPI.md#getmusic) | **Get** /v1/music/{music_id} | Retrieve a music task
 *ProxyAPI* | [**ProxyRequestDelete**](docs/ProxyAPI.md#proxyrequestdelete) | **Delete** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
