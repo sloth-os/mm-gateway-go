@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**CreateImage**](ImagesAPI.md#CreateImage) | **Post** /v1/images | Create an image task
+[**EstimateImage**](ImagesAPI.md#EstimateImage) | **Post** /v1/images/estimate | Estimate an image request
 [**GetImage**](ImagesAPI.md#GetImage) | **Get** /v1/images/{image_id} | Retrieve an image task
 
 
@@ -60,6 +61,70 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ImageTaskResponse**](ImageTaskResponse.md)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## EstimateImage
+
+> EstimateResponse EstimateImage(ctx).ImageRequest(imageRequest).Execute()
+
+Estimate an image request
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	imageRequest := *openapiclient.NewImageRequest([]openapiclient.InputInner{openapiclient.Input_inner{ImageInput: openapiclient.NewImageInput("Type_example", "Uri_example")}}) // ImageRequest | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ImagesAPI.EstimateImage(context.Background()).ImageRequest(imageRequest).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ImagesAPI.EstimateImage``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `EstimateImage`: EstimateResponse
+	fmt.Fprintf(os.Stdout, "Response from `ImagesAPI.EstimateImage`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiEstimateImageRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **imageRequest** | [**ImageRequest**](ImageRequest.md) |  | 
+
+### Return type
+
+[**EstimateResponse**](EstimateResponse.md)
 
 ### Authorization
 

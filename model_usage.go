@@ -20,6 +20,8 @@ var _ MappedNullable = &Usage{}
 // Usage Provider-neutral usage fields shared by all three modalities.
 type Usage struct {
 	Cost NullableFloat32 `json:"cost,omitempty"`
+	CostSource NullableString `json:"cost_source,omitempty"`
+	Currency NullableString `json:"currency,omitempty"`
 	DurationSeconds NullableFloat32 `json:"duration_seconds,omitempty"`
 	InputTokens NullableInt32 `json:"input_tokens,omitempty"`
 	OutputCount NullableInt32 `json:"output_count,omitempty"`
@@ -87,6 +89,90 @@ func (o *Usage) SetCostNil() {
 // UnsetCost ensures that no value is present for Cost, not even an explicit nil
 func (o *Usage) UnsetCost() {
 	o.Cost.Unset()
+}
+
+// GetCostSource returns the CostSource field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Usage) GetCostSource() string {
+	if o == nil || IsNil(o.CostSource.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.CostSource.Get()
+}
+
+// GetCostSourceOk returns a tuple with the CostSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Usage) GetCostSourceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CostSource.Get(), o.CostSource.IsSet()
+}
+
+// HasCostSource returns a boolean if a field has been set.
+func (o *Usage) HasCostSource() bool {
+	if o != nil && o.CostSource.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCostSource gets a reference to the given NullableString and assigns it to the CostSource field.
+func (o *Usage) SetCostSource(v string) {
+	o.CostSource.Set(&v)
+}
+// SetCostSourceNil sets the value for CostSource to be an explicit nil
+func (o *Usage) SetCostSourceNil() {
+	o.CostSource.Set(nil)
+}
+
+// UnsetCostSource ensures that no value is present for CostSource, not even an explicit nil
+func (o *Usage) UnsetCostSource() {
+	o.CostSource.Unset()
+}
+
+// GetCurrency returns the Currency field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Usage) GetCurrency() string {
+	if o == nil || IsNil(o.Currency.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Currency.Get()
+}
+
+// GetCurrencyOk returns a tuple with the Currency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Usage) GetCurrencyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Currency.Get(), o.Currency.IsSet()
+}
+
+// HasCurrency returns a boolean if a field has been set.
+func (o *Usage) HasCurrency() bool {
+	if o != nil && o.Currency.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrency gets a reference to the given NullableString and assigns it to the Currency field.
+func (o *Usage) SetCurrency(v string) {
+	o.Currency.Set(&v)
+}
+// SetCurrencyNil sets the value for Currency to be an explicit nil
+func (o *Usage) SetCurrencyNil() {
+	o.Currency.Set(nil)
+}
+
+// UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
+func (o *Usage) UnsetCurrency() {
+	o.Currency.Unset()
 }
 
 // GetDurationSeconds returns the DurationSeconds field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -312,6 +398,12 @@ func (o Usage) ToMap() (map[string]interface{}, error) {
 	if o.Cost.IsSet() {
 		toSerialize["cost"] = o.Cost.Get()
 	}
+	if o.CostSource.IsSet() {
+		toSerialize["cost_source"] = o.CostSource.Get()
+	}
+	if o.Currency.IsSet() {
+		toSerialize["currency"] = o.Currency.Get()
+	}
 	if o.DurationSeconds.IsSet() {
 		toSerialize["duration_seconds"] = o.DurationSeconds.Get()
 	}
@@ -350,6 +442,8 @@ func (o *Usage) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "cost")
+		delete(additionalProperties, "cost_source")
+		delete(additionalProperties, "currency")
 		delete(additionalProperties, "duration_seconds")
 		delete(additionalProperties, "input_tokens")
 		delete(additionalProperties, "output_count")

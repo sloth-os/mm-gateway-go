@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **Model** | **string** |  | 
 **Object** | Pointer to **string** |  | [optional] [default to "video"]
 **Outputs** | Pointer to [**[]VideoOutput**](VideoOutput.md) |  | [optional] 
+**Routing** | Pointer to [**NullableRoutingInfo**](RoutingInfo.md) |  | [optional] 
 **Status** | **string** |  | 
 **Usage** | Pointer to [**NullableUsage**](Usage.md) |  | [optional] 
 
@@ -260,6 +261,41 @@ SetOutputs sets Outputs field to given value.
 
 HasOutputs returns a boolean if a field has been set.
 
+### GetRouting
+
+`func (o *VideoTaskResponse) GetRouting() RoutingInfo`
+
+GetRouting returns the Routing field if non-nil, zero value otherwise.
+
+### GetRoutingOk
+
+`func (o *VideoTaskResponse) GetRoutingOk() (*RoutingInfo, bool)`
+
+GetRoutingOk returns a tuple with the Routing field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouting
+
+`func (o *VideoTaskResponse) SetRouting(v RoutingInfo)`
+
+SetRouting sets Routing field to given value.
+
+### HasRouting
+
+`func (o *VideoTaskResponse) HasRouting() bool`
+
+HasRouting returns a boolean if a field has been set.
+
+### SetRoutingNil
+
+`func (o *VideoTaskResponse) SetRoutingNil(b bool)`
+
+ SetRoutingNil sets the value for Routing to be an explicit nil
+
+### UnsetRouting
+`func (o *VideoTaskResponse) UnsetRouting()`
+
+UnsetRouting ensures that no value is present for Routing, not even an explicit nil
 ### GetStatus
 
 `func (o *VideoTaskResponse) GetStatus() string`

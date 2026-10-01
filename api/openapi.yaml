@@ -1570,6 +1570,170 @@ paths:
       summary: Create an image task
       tags:
       - images
+  /v1/images/estimate:
+    post:
+      operationId: estimateImage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImageRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateResponse"
+          description: "How auto mode would route the request, and its estimated cost."
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/images/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Estimate an image request
+      tags:
+      - images
   /v1/images/{image_id}:
     get:
       operationId: getImage
@@ -2514,6 +2678,170 @@ paths:
       summary: Create a music task
       tags:
       - music
+  /v1/music/estimate:
+    post:
+      operationId: estimateMusic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MusicRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateResponse"
+          description: "How auto mode would route the request, and its estimated cost."
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/music/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Estimate a music request
+      tags:
+      - music
   /v1/music/{music_id}:
     get:
       operationId: getMusic
@@ -2735,6 +3063,178 @@ paths:
       summary: Retrieve a music task
       tags:
       - music
+  /v1/usage:
+    get:
+      operationId: getUsage
+      parameters:
+      - description: Report only this budget scope.
+        explode: true
+        in: query
+        name: scope
+        required: false
+        schema:
+          description: Report only this budget scope.
+          maxLength: 128
+          minLength: 1
+          nullable: true
+          pattern: "^[A-Za-z0-9._:/-]+$"
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageResponse"
+          description: "Spend, reservations and budgets for the current period."
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Spend and budgets of the authenticated key
+      tags:
+      - usage
   /v1/videos:
     post:
       operationId: createVideo
@@ -2975,6 +3475,170 @@ paths:
       summary: Create a video task
       tags:
       - videos
+  /v1/videos/estimate:
+    post:
+      operationId: estimateVideo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateResponse"
+          description: "How auto mode would route the request, and its estimated cost."
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/videos/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Estimate a video request
+      tags:
+      - videos
   /v1/videos/{video_id}:
     get:
       operationId: getVideo
@@ -3196,6 +3860,58 @@ paths:
       - videos
 components:
   schemas:
+    BudgetDirective:
+      additionalProperties: false
+      description: "A client-chosen spend bucket within the key, optionally self-capped."
+      properties:
+        limit_usd:
+          description: Self-imposed cap for the scope in USD (the operator's scope
+            cap still applies).
+          minimum: 0.0
+          nullable: true
+          type: number
+        scope:
+          description: "Spend bucket name (a project, a customer, a batch)."
+          maxLength: 128
+          minLength: 1
+          pattern: "^[A-Za-z0-9._:/-]+$"
+          title: Scope
+          type: string
+      required:
+      - scope
+      title: BudgetDirective
+    BudgetState:
+      additionalProperties: {}
+      description: The state of one budget (a key's period or a client scope).
+      example:
+        limit_usd: 0.8008281904610115
+        remaining_usd: 6.027456183070403
+        reserved_usd: 1.4658129805029452
+        scope: scope
+        spent_usd: 5.962133916683182
+        tasks: 5
+      properties:
+        limit_usd:
+          nullable: true
+          type: number
+        remaining_usd:
+          nullable: true
+          type: number
+        reserved_usd:
+          default: 0.0
+          title: Reserved Usd
+          type: number
+        scope:
+          nullable: true
+          type: string
+        spent_usd:
+          default: 0.0
+          title: Spent Usd
+          type: number
+        tasks:
+          nullable: true
+          type: integer
+      title: BudgetState
     Dimensions:
       additionalProperties: false
       description: Exact output dimensions in pixels.
@@ -3212,6 +3928,101 @@ components:
       - height
       - width
       title: Dimensions
+    EstimateCandidate:
+      additionalProperties: true
+      example:
+        admissible: true
+        estimated_cost: 0.8008281904610115
+        lifecycle: active
+        model: model
+        reason: reason
+      properties:
+        admissible:
+          default: true
+          title: Admissible
+          type: boolean
+        estimated_cost:
+          nullable: true
+          type: number
+        lifecycle:
+          default: active
+          enum:
+          - active
+          - deprecated
+          - retired
+          title: Lifecycle
+          type: string
+        model:
+          title: Model
+          type: string
+        reason:
+          description: "Why the candidate is not admissible: limits, retired, max_cost,\
+            \ unpriced or budget."
+          nullable: true
+          type: string
+      required:
+      - model
+      title: EstimateCandidate
+    EstimateResponse:
+      additionalProperties: true
+      description: "The routing and cost a create would get, without creating a task."
+      example:
+        budget: ""
+        candidates:
+        - admissible: true
+          estimated_cost: 0.8008281904610115
+          lifecycle: active
+          model: model
+          reason: reason
+        - admissible: true
+          estimated_cost: 0.8008281904610115
+          lifecycle: active
+          model: model
+          reason: reason
+        currency: USD
+        estimated_cost: 6.027456183070403
+        modality: image
+        model: model
+        object: estimate
+      properties:
+        budget:
+          allOf:
+          - $ref: "#/components/schemas/BudgetState"
+          nullable: true
+        candidates:
+          items:
+            $ref: "#/components/schemas/EstimateCandidate"
+          title: Candidates
+          type: array
+          default: null
+        currency:
+          default: USD
+          enum:
+          - USD
+          title: Currency
+          type: string
+        estimated_cost:
+          nullable: true
+          type: number
+        modality:
+          enum:
+          - image
+          - video
+          - music
+          title: Modality
+          type: string
+        model:
+          nullable: true
+          type: string
+        object:
+          default: estimate
+          enum:
+          - estimate
+          title: Object
+          type: string
+      required:
+      - modality
+      title: EstimateResponse
     HealthResponse:
       additionalProperties: true
       example:
@@ -3386,6 +4197,7 @@ components:
         - mime_type: mime_type
           revised_prompt: revised_prompt
           uri: https://openapi-generator.tech
+        routing: ""
         status: pending
         usage: ""
       properties:
@@ -3425,6 +4237,10 @@ components:
           title: Outputs
           type: array
           default: null
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingInfo"
+          nullable: true
         status:
           enum:
           - pending
@@ -3588,6 +4404,36 @@ components:
       required:
       - data
       title: ModelListResponse
+    ModelSpend:
+      additionalProperties: true
+      example:
+        modality: image
+        model: model
+        spent_usd: 2.3021358869347655
+        tasks: 7
+      properties:
+        modality:
+          enum:
+          - image
+          - video
+          - music
+          title: Modality
+          type: string
+        model:
+          title: Model
+          type: string
+        spent_usd:
+          default: 0.0
+          title: Spent Usd
+          type: number
+        tasks:
+          default: 0
+          title: Tasks
+          type: integer
+      required:
+      - modality
+      - model
+      title: ModelSpend
     MusicAudioInput:
       additionalProperties: false
       properties:
@@ -3808,6 +4654,7 @@ components:
           uri: https://openapi-generator.tech
         - mime_type: mime_type
           uri: https://openapi-generator.tech
+        routing: ""
         status: pending
         usage: ""
       properties:
@@ -3850,6 +4697,10 @@ components:
           title: Outputs
           type: array
           default: null
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingInfo"
+          nullable: true
         status:
           enum:
           - pending
@@ -3934,17 +4785,80 @@ components:
       title: ResourceLinks
     RoutingDirective:
       additionalProperties: false
-      description: "Select a server-defined, provider-neutral routing policy."
+      description: |-
+        Steer auto mode: policy, ordering, cost ceiling, fallbacks and budget scope.
+
+        See docs/design/auto-mode.md. Every member is optional.
       properties:
+        budget:
+          allOf:
+          - $ref: "#/components/schemas/BudgetDirective"
+          nullable: true
+        fallback:
+          description: "Pinned models only: `none` (default) tries one backend, `same_model`\
+            \ every backend/account serving the model, `any` also the replacement\
+            \ and the auto candidates when the model is retired or unavailable."
+          enum:
+          - none
+          - same_model
+          - any
+          nullable: true
+          type: string
+        max_cost_usd:
+          description: Hard per-task ceiling on the estimated cost in USD; unpriced
+            models are excluded.
+          exclusiveMinimum: true
+          minimum: 0.0
+          nullable: true
+          type: number
+        optimize:
+          description: "How admissible candidates are ordered (default: the gateway's\
+            \ default, `balanced`)."
+          enum:
+          - balanced
+          - cost
+          - latency
+          nullable: true
+          type: string
         profile:
           description: "Gateway-defined routing profile, such as `quality`, `fast`,\
             \ or `eu`. It never names a provider or backend."
           minLength: 1
-          title: Profile
+          nullable: true
+          type: string
+      title: RoutingDirective
+    RoutingInfo:
+      additionalProperties: true
+      description: How auto mode served a task (docs/design/auto-mode.md#fallbacks).
+      properties:
+        attempts:
+          default: 1
+          title: Attempts
+          type: integer
+        budget:
+          allOf:
+          - $ref: "#/components/schemas/BudgetState"
+          nullable: true
+        estimated_cost:
+          nullable: true
+          type: number
+        fallback:
+          default: false
+          title: Fallback
+          type: boolean
+        fallback_reason:
+          nullable: true
+          type: string
+        optimize:
+          default: balanced
+          title: Optimize
+          type: string
+        requested_model:
+          title: Requested Model
           type: string
       required:
-      - profile
-      title: RoutingDirective
+      - requested_model
+      title: RoutingInfo
     TaskError:
       additionalProperties: true
       properties:
@@ -3981,6 +4895,17 @@ components:
         cost:
           nullable: true
           type: number
+        cost_source:
+          enum:
+          - provider
+          - estimate
+          nullable: true
+          type: string
+        currency:
+          enum:
+          - USD
+          nullable: true
+          type: string
         duration_seconds:
           nullable: true
           type: number
@@ -3997,6 +4922,103 @@ components:
           nullable: true
           type: integer
       title: Usage
+    UsagePeriod:
+      additionalProperties: true
+      example:
+        end: 2000-01-23T04:56:07.000+00:00
+        kind: day
+        start: 2000-01-23T04:56:07.000+00:00
+      properties:
+        end:
+          format: date-time
+          nullable: true
+          type: string
+        kind:
+          enum:
+          - day
+          - month
+          - total
+          title: Kind
+          type: string
+        start:
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - kind
+      title: UsagePeriod
+    UsageResponse:
+      additionalProperties: true
+      description: "Spend, reservations and budgets of the authenticated key."
+      example:
+        currency: USD
+        key:
+          limit_usd: 0.8008281904610115
+          remaining_usd: 6.027456183070403
+          reserved_usd: 1.4658129805029452
+          scope: scope
+          spent_usd: 5.962133916683182
+          tasks: 5
+        models:
+        - modality: image
+          model: model
+          spent_usd: 2.3021358869347655
+          tasks: 7
+        - modality: image
+          model: model
+          spent_usd: 2.3021358869347655
+          tasks: 7
+        object: usage
+        period:
+          end: 2000-01-23T04:56:07.000+00:00
+          kind: day
+          start: 2000-01-23T04:56:07.000+00:00
+        scopes:
+        - limit_usd: 0.8008281904610115
+          remaining_usd: 6.027456183070403
+          reserved_usd: 1.4658129805029452
+          scope: scope
+          spent_usd: 5.962133916683182
+          tasks: 5
+        - limit_usd: 0.8008281904610115
+          remaining_usd: 6.027456183070403
+          reserved_usd: 1.4658129805029452
+          scope: scope
+          spent_usd: 5.962133916683182
+          tasks: 5
+      properties:
+        currency:
+          default: USD
+          enum:
+          - USD
+          title: Currency
+          type: string
+        key:
+          $ref: "#/components/schemas/BudgetState"
+        models:
+          items:
+            $ref: "#/components/schemas/ModelSpend"
+          title: Models
+          type: array
+          default: null
+        object:
+          default: usage
+          enum:
+          - usage
+          title: Object
+          type: string
+        period:
+          $ref: "#/components/schemas/UsagePeriod"
+        scopes:
+          items:
+            $ref: "#/components/schemas/BudgetState"
+          title: Scopes
+          type: array
+          default: null
+      required:
+      - key
+      - period
+      title: UsageResponse
     VideoAudioInput:
       additionalProperties: false
       properties:
@@ -4214,6 +5236,7 @@ components:
         - cover_uri: https://openapi-generator.tech
           mime_type: mime_type
           uri: https://openapi-generator.tech
+        routing: ""
         status: pending
         usage: ""
       properties:
@@ -4253,6 +5276,10 @@ components:
           title: Outputs
           type: array
           default: null
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingInfo"
+          nullable: true
         status:
           enum:
           - pending

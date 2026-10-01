@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**CreateMusic**](MusicAPI.md#CreateMusic) | **Post** /v1/music | Create a music task
+[**EstimateMusic**](MusicAPI.md#EstimateMusic) | **Post** /v1/music/estimate | Estimate a music request
 [**GetMusic**](MusicAPI.md#GetMusic) | **Get** /v1/music/{music_id} | Retrieve a music task
 
 
@@ -60,6 +61,70 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**MusicTaskResponse**](MusicTaskResponse.md)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## EstimateMusic
+
+> EstimateResponse EstimateMusic(ctx).MusicRequest(musicRequest).Execute()
+
+Estimate a music request
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	musicRequest := *openapiclient.NewMusicRequest([]openapiclient.InputInner1{openapiclient.Input_inner_1{LyricsInput: openapiclient.NewLyricsInput("Text_example", "Type_example")}}) // MusicRequest | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.MusicAPI.EstimateMusic(context.Background()).MusicRequest(musicRequest).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `MusicAPI.EstimateMusic``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `EstimateMusic`: EstimateResponse
+	fmt.Fprintf(os.Stdout, "Response from `MusicAPI.EstimateMusic`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiEstimateMusicRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **musicRequest** | [**MusicRequest**](MusicRequest.md) |  | 
+
+### Return type
+
+[**EstimateResponse**](EstimateResponse.md)
 
 ### Authorization
 

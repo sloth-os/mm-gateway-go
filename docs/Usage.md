@@ -5,6 +5,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Cost** | Pointer to **NullableFloat32** |  | [optional] 
+**CostSource** | Pointer to **NullableString** |  | [optional] 
+**Currency** | Pointer to **NullableString** |  | [optional] 
 **DurationSeconds** | Pointer to **NullableFloat32** |  | [optional] 
 **InputTokens** | Pointer to **NullableInt32** |  | [optional] 
 **OutputCount** | Pointer to **NullableInt32** |  | [optional] 
@@ -65,6 +67,76 @@ HasCost returns a boolean if a field has been set.
 `func (o *Usage) UnsetCost()`
 
 UnsetCost ensures that no value is present for Cost, not even an explicit nil
+### GetCostSource
+
+`func (o *Usage) GetCostSource() string`
+
+GetCostSource returns the CostSource field if non-nil, zero value otherwise.
+
+### GetCostSourceOk
+
+`func (o *Usage) GetCostSourceOk() (*string, bool)`
+
+GetCostSourceOk returns a tuple with the CostSource field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCostSource
+
+`func (o *Usage) SetCostSource(v string)`
+
+SetCostSource sets CostSource field to given value.
+
+### HasCostSource
+
+`func (o *Usage) HasCostSource() bool`
+
+HasCostSource returns a boolean if a field has been set.
+
+### SetCostSourceNil
+
+`func (o *Usage) SetCostSourceNil(b bool)`
+
+ SetCostSourceNil sets the value for CostSource to be an explicit nil
+
+### UnsetCostSource
+`func (o *Usage) UnsetCostSource()`
+
+UnsetCostSource ensures that no value is present for CostSource, not even an explicit nil
+### GetCurrency
+
+`func (o *Usage) GetCurrency() string`
+
+GetCurrency returns the Currency field if non-nil, zero value otherwise.
+
+### GetCurrencyOk
+
+`func (o *Usage) GetCurrencyOk() (*string, bool)`
+
+GetCurrencyOk returns a tuple with the Currency field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCurrency
+
+`func (o *Usage) SetCurrency(v string)`
+
+SetCurrency sets Currency field to given value.
+
+### HasCurrency
+
+`func (o *Usage) HasCurrency() bool`
+
+HasCurrency returns a boolean if a field has been set.
+
+### SetCurrencyNil
+
+`func (o *Usage) SetCurrencyNil(b bool)`
+
+ SetCurrencyNil sets the value for Currency to be an explicit nil
+
+### UnsetCurrency
+`func (o *Usage) UnsetCurrency()`
+
+UnsetCurrency ensures that no value is present for Currency, not even an explicit nil
 ### GetDurationSeconds
 
 `func (o *Usage) GetDurationSeconds() float32`

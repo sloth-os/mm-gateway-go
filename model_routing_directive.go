@@ -12,28 +12,30 @@ package mmgateway
 
 import (
 	"encoding/json"
-	"bytes"
-	"fmt"
 )
 
 // checks if the RoutingDirective type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &RoutingDirective{}
 
-// RoutingDirective Select a server-defined, provider-neutral routing policy.
+// RoutingDirective Steer auto mode: policy, ordering, cost ceiling, fallbacks and budget scope.  See docs/design/auto-mode.md. Every member is optional.
 type RoutingDirective struct {
+	Budget NullableBudgetDirective `json:"budget,omitempty"`
+	// Pinned models only: `none` (default) tries one backend, `same_model` every backend/account serving the model, `any` also the replacement and the auto candidates when the model is retired or unavailable.
+	Fallback NullableString `json:"fallback,omitempty"`
+	// Hard per-task ceiling on the estimated cost in USD; unpriced models are excluded.
+	MaxCostUsd NullableFloat32 `json:"max_cost_usd,omitempty"`
+	// How admissible candidates are ordered (default: the gateway's default, `balanced`).
+	Optimize NullableString `json:"optimize,omitempty"`
 	// Gateway-defined routing profile, such as `quality`, `fast`, or `eu`. It never names a provider or backend.
-	Profile string `json:"profile"`
+	Profile NullableString `json:"profile,omitempty"`
 }
-
-type _RoutingDirective RoutingDirective
 
 // NewRoutingDirective instantiates a new RoutingDirective object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoutingDirective(profile string) *RoutingDirective {
+func NewRoutingDirective() *RoutingDirective {
 	this := RoutingDirective{}
-	this.Profile = profile
 	return &this
 }
 
@@ -45,28 +47,214 @@ func NewRoutingDirectiveWithDefaults() *RoutingDirective {
 	return &this
 }
 
-// GetProfile returns the Profile field value
-func (o *RoutingDirective) GetProfile() string {
+// GetBudget returns the Budget field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutingDirective) GetBudget() BudgetDirective {
+	if o == nil || IsNil(o.Budget.Get()) {
+		var ret BudgetDirective
+		return ret
+	}
+	return *o.Budget.Get()
+}
+
+// GetBudgetOk returns a tuple with the Budget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RoutingDirective) GetBudgetOk() (*BudgetDirective, bool) {
 	if o == nil {
+		return nil, false
+	}
+	return o.Budget.Get(), o.Budget.IsSet()
+}
+
+// HasBudget returns a boolean if a field has been set.
+func (o *RoutingDirective) HasBudget() bool {
+	if o != nil && o.Budget.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBudget gets a reference to the given NullableBudgetDirective and assigns it to the Budget field.
+func (o *RoutingDirective) SetBudget(v BudgetDirective) {
+	o.Budget.Set(&v)
+}
+// SetBudgetNil sets the value for Budget to be an explicit nil
+func (o *RoutingDirective) SetBudgetNil() {
+	o.Budget.Set(nil)
+}
+
+// UnsetBudget ensures that no value is present for Budget, not even an explicit nil
+func (o *RoutingDirective) UnsetBudget() {
+	o.Budget.Unset()
+}
+
+// GetFallback returns the Fallback field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutingDirective) GetFallback() string {
+	if o == nil || IsNil(o.Fallback.Get()) {
 		var ret string
 		return ret
 	}
-
-	return o.Profile
+	return *o.Fallback.Get()
 }
 
-// GetProfileOk returns a tuple with the Profile field value
+// GetFallbackOk returns a tuple with the Fallback field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RoutingDirective) GetFallbackOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Fallback.Get(), o.Fallback.IsSet()
+}
+
+// HasFallback returns a boolean if a field has been set.
+func (o *RoutingDirective) HasFallback() bool {
+	if o != nil && o.Fallback.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFallback gets a reference to the given NullableString and assigns it to the Fallback field.
+func (o *RoutingDirective) SetFallback(v string) {
+	o.Fallback.Set(&v)
+}
+// SetFallbackNil sets the value for Fallback to be an explicit nil
+func (o *RoutingDirective) SetFallbackNil() {
+	o.Fallback.Set(nil)
+}
+
+// UnsetFallback ensures that no value is present for Fallback, not even an explicit nil
+func (o *RoutingDirective) UnsetFallback() {
+	o.Fallback.Unset()
+}
+
+// GetMaxCostUsd returns the MaxCostUsd field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutingDirective) GetMaxCostUsd() float32 {
+	if o == nil || IsNil(o.MaxCostUsd.Get()) {
+		var ret float32
+		return ret
+	}
+	return *o.MaxCostUsd.Get()
+}
+
+// GetMaxCostUsdOk returns a tuple with the MaxCostUsd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RoutingDirective) GetMaxCostUsdOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxCostUsd.Get(), o.MaxCostUsd.IsSet()
+}
+
+// HasMaxCostUsd returns a boolean if a field has been set.
+func (o *RoutingDirective) HasMaxCostUsd() bool {
+	if o != nil && o.MaxCostUsd.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxCostUsd gets a reference to the given NullableFloat32 and assigns it to the MaxCostUsd field.
+func (o *RoutingDirective) SetMaxCostUsd(v float32) {
+	o.MaxCostUsd.Set(&v)
+}
+// SetMaxCostUsdNil sets the value for MaxCostUsd to be an explicit nil
+func (o *RoutingDirective) SetMaxCostUsdNil() {
+	o.MaxCostUsd.Set(nil)
+}
+
+// UnsetMaxCostUsd ensures that no value is present for MaxCostUsd, not even an explicit nil
+func (o *RoutingDirective) UnsetMaxCostUsd() {
+	o.MaxCostUsd.Unset()
+}
+
+// GetOptimize returns the Optimize field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutingDirective) GetOptimize() string {
+	if o == nil || IsNil(o.Optimize.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Optimize.Get()
+}
+
+// GetOptimizeOk returns a tuple with the Optimize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RoutingDirective) GetOptimizeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Optimize.Get(), o.Optimize.IsSet()
+}
+
+// HasOptimize returns a boolean if a field has been set.
+func (o *RoutingDirective) HasOptimize() bool {
+	if o != nil && o.Optimize.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimize gets a reference to the given NullableString and assigns it to the Optimize field.
+func (o *RoutingDirective) SetOptimize(v string) {
+	o.Optimize.Set(&v)
+}
+// SetOptimizeNil sets the value for Optimize to be an explicit nil
+func (o *RoutingDirective) SetOptimizeNil() {
+	o.Optimize.Set(nil)
+}
+
+// UnsetOptimize ensures that no value is present for Optimize, not even an explicit nil
+func (o *RoutingDirective) UnsetOptimize() {
+	o.Optimize.Unset()
+}
+
+// GetProfile returns the Profile field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutingDirective) GetProfile() string {
+	if o == nil || IsNil(o.Profile.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Profile.Get()
+}
+
+// GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *RoutingDirective) GetProfileOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Profile, true
+	return o.Profile.Get(), o.Profile.IsSet()
 }
 
-// SetProfile sets field value
+// HasProfile returns a boolean if a field has been set.
+func (o *RoutingDirective) HasProfile() bool {
+	if o != nil && o.Profile.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetProfile gets a reference to the given NullableString and assigns it to the Profile field.
 func (o *RoutingDirective) SetProfile(v string) {
-	o.Profile = v
+	o.Profile.Set(&v)
+}
+// SetProfileNil sets the value for Profile to be an explicit nil
+func (o *RoutingDirective) SetProfileNil() {
+	o.Profile.Set(nil)
+}
+
+// UnsetProfile ensures that no value is present for Profile, not even an explicit nil
+func (o *RoutingDirective) UnsetProfile() {
+	o.Profile.Unset()
 }
 
 func (o RoutingDirective) MarshalJSON() ([]byte, error) {
@@ -79,45 +267,22 @@ func (o RoutingDirective) MarshalJSON() ([]byte, error) {
 
 func (o RoutingDirective) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["profile"] = o.Profile
+	if o.Budget.IsSet() {
+		toSerialize["budget"] = o.Budget.Get()
+	}
+	if o.Fallback.IsSet() {
+		toSerialize["fallback"] = o.Fallback.Get()
+	}
+	if o.MaxCostUsd.IsSet() {
+		toSerialize["max_cost_usd"] = o.MaxCostUsd.Get()
+	}
+	if o.Optimize.IsSet() {
+		toSerialize["optimize"] = o.Optimize.Get()
+	}
+	if o.Profile.IsSet() {
+		toSerialize["profile"] = o.Profile.Get()
+	}
 	return toSerialize, nil
-}
-
-func (o *RoutingDirective) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"profile",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err;
-	}
-
-	for _, requiredProperty := range(requiredProperties) {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varRoutingDirective := _RoutingDirective{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRoutingDirective)
-
-	if err != nil {
-		return err
-	}
-
-	*o = RoutingDirective(varRoutingDirective)
-
-	return err
 }
 
 type NullableRoutingDirective struct {

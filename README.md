@@ -72,12 +72,14 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *ImagesAPI* | [**CreateImage**](docs/ImagesAPI.md#createimage) | **Post** /v1/images | Create an image task
+*ImagesAPI* | [**EstimateImage**](docs/ImagesAPI.md#estimateimage) | **Post** /v1/images/estimate | Estimate an image request
 *ImagesAPI* | [**GetImage**](docs/ImagesAPI.md#getimage) | **Get** /v1/images/{image_id} | Retrieve an image task
 *MetaAPI* | [**GetHealth**](docs/MetaAPI.md#gethealth) | **Get** /health | Health
 *MetaAPI* | [**GetMetrics**](docs/MetaAPI.md#getmetrics) | **Get** /metrics | Metrics
 *MetaAPI* | [**ListModelLimits**](docs/MetaAPI.md#listmodellimits) | **Get** /v1/models/limits | List Model Limits
 *MetaAPI* | [**ListModels**](docs/MetaAPI.md#listmodels) | **Get** /v1/models | List Models
 *MusicAPI* | [**CreateMusic**](docs/MusicAPI.md#createmusic) | **Post** /v1/music | Create a music task
+*MusicAPI* | [**EstimateMusic**](docs/MusicAPI.md#estimatemusic) | **Post** /v1/music/estimate | Estimate a music request
 *MusicAPI* | [**GetMusic**](docs/MusicAPI.md#getmusic) | **Get** /v1/music/{music_id} | Retrieve a music task
 *ProxyAPI* | [**ProxyRequestDelete**](docs/ProxyAPI.md#proxyrequestdelete) | **Delete** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
 *ProxyAPI* | [**ProxyRequestGet**](docs/ProxyAPI.md#proxyrequestget) | **Get** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
@@ -86,13 +88,19 @@ Class | Method | HTTP request | Description
 *ProxyAPI* | [**ProxyRequestPatch**](docs/ProxyAPI.md#proxyrequestpatch) | **Patch** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
 *ProxyAPI* | [**ProxyRequestPost**](docs/ProxyAPI.md#proxyrequestpost) | **Post** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
 *ProxyAPI* | [**ProxyRequestPut**](docs/ProxyAPI.md#proxyrequestput) | **Put** /proxy/{domain}/{path} | Forward a request through a domain-matched proxy
+*UsageAPI* | [**GetUsage**](docs/UsageAPI.md#getusage) | **Get** /v1/usage | Spend and budgets of the authenticated key
 *VideosAPI* | [**CreateVideo**](docs/VideosAPI.md#createvideo) | **Post** /v1/videos | Create a video task
+*VideosAPI* | [**EstimateVideo**](docs/VideosAPI.md#estimatevideo) | **Post** /v1/videos/estimate | Estimate a video request
 *VideosAPI* | [**GetVideo**](docs/VideosAPI.md#getvideo) | **Get** /v1/videos/{video_id} | Retrieve a video task
 
 
 ## Documentation For Models
 
+ - [BudgetDirective](docs/BudgetDirective.md)
+ - [BudgetState](docs/BudgetState.md)
  - [Dimensions](docs/Dimensions.md)
+ - [EstimateCandidate](docs/EstimateCandidate.md)
+ - [EstimateResponse](docs/EstimateResponse.md)
  - [HealthResponse](docs/HealthResponse.md)
  - [ImageInput](docs/ImageInput.md)
  - [ImageOutput](docs/ImageOutput.md)
@@ -107,6 +115,7 @@ Class | Method | HTTP request | Description
  - [ModelLimitsEntry](docs/ModelLimitsEntry.md)
  - [ModelLimitsListResponse](docs/ModelLimitsListResponse.md)
  - [ModelListResponse](docs/ModelListResponse.md)
+ - [ModelSpend](docs/ModelSpend.md)
  - [MusicAudioInput](docs/MusicAudioInput.md)
  - [MusicImageInput](docs/MusicImageInput.md)
  - [MusicOutput](docs/MusicOutput.md)
@@ -116,9 +125,12 @@ Class | Method | HTTP request | Description
  - [ProblemDetail](docs/ProblemDetail.md)
  - [ResourceLinks](docs/ResourceLinks.md)
  - [RoutingDirective](docs/RoutingDirective.md)
+ - [RoutingInfo](docs/RoutingInfo.md)
  - [TaskError](docs/TaskError.md)
  - [TextInput](docs/TextInput.md)
  - [Usage](docs/Usage.md)
+ - [UsagePeriod](docs/UsagePeriod.md)
+ - [UsageResponse](docs/UsageResponse.md)
  - [VideoAudioInput](docs/VideoAudioInput.md)
  - [VideoImageInput](docs/VideoImageInput.md)
  - [VideoInput](docs/VideoInput.md)

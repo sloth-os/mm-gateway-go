@@ -30,6 +30,7 @@ type ImageTaskResponse struct {
 	Model string `json:"model"`
 	Object *string `json:"object,omitempty"`
 	Outputs []ImageOutput `json:"outputs,omitempty"`
+	Routing NullableRoutingInfo `json:"routing,omitempty"`
 	Status string `json:"status"`
 	Usage NullableUsage `json:"usage,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -339,6 +340,48 @@ func (o *ImageTaskResponse) SetOutputs(v []ImageOutput) {
 	o.Outputs = v
 }
 
+// GetRouting returns the Routing field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ImageTaskResponse) GetRouting() RoutingInfo {
+	if o == nil || IsNil(o.Routing.Get()) {
+		var ret RoutingInfo
+		return ret
+	}
+	return *o.Routing.Get()
+}
+
+// GetRoutingOk returns a tuple with the Routing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageTaskResponse) GetRoutingOk() (*RoutingInfo, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Routing.Get(), o.Routing.IsSet()
+}
+
+// HasRouting returns a boolean if a field has been set.
+func (o *ImageTaskResponse) HasRouting() bool {
+	if o != nil && o.Routing.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRouting gets a reference to the given NullableRoutingInfo and assigns it to the Routing field.
+func (o *ImageTaskResponse) SetRouting(v RoutingInfo) {
+	o.Routing.Set(&v)
+}
+// SetRoutingNil sets the value for Routing to be an explicit nil
+func (o *ImageTaskResponse) SetRoutingNil() {
+	o.Routing.Set(nil)
+}
+
+// UnsetRouting ensures that no value is present for Routing, not even an explicit nil
+func (o *ImageTaskResponse) UnsetRouting() {
+	o.Routing.Unset()
+}
+
 // GetStatus returns the Status field value
 func (o *ImageTaskResponse) GetStatus() string {
 	if o == nil {
@@ -434,6 +477,9 @@ func (o ImageTaskResponse) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Outputs) {
 		toSerialize["outputs"] = o.Outputs
 	}
+	if o.Routing.IsSet() {
+		toSerialize["routing"] = o.Routing.Get()
+	}
 	toSerialize["status"] = o.Status
 	if o.Usage.IsSet() {
 		toSerialize["usage"] = o.Usage.Get()
@@ -494,6 +540,7 @@ func (o *ImageTaskResponse) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "model")
 		delete(additionalProperties, "object")
 		delete(additionalProperties, "outputs")
+		delete(additionalProperties, "routing")
 		delete(additionalProperties, "status")
 		delete(additionalProperties, "usage")
 		o.AdditionalProperties = additionalProperties

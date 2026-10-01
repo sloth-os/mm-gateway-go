@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**CreateVideo**](VideosAPI.md#CreateVideo) | **Post** /v1/videos | Create a video task
+[**EstimateVideo**](VideosAPI.md#EstimateVideo) | **Post** /v1/videos/estimate | Estimate a video request
 [**GetVideo**](VideosAPI.md#GetVideo) | **Get** /v1/videos/{video_id} | Retrieve a video task
 
 
@@ -60,6 +61,70 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**VideoTaskResponse**](VideoTaskResponse.md)
+
+### Authorization
+
+[BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## EstimateVideo
+
+> EstimateResponse EstimateVideo(ctx).VideoRequest(videoRequest).Execute()
+
+Estimate a video request
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	videoRequest := *openapiclient.NewVideoRequest([]openapiclient.InputInner2{openapiclient.Input_inner_2{TextInput: openapiclient.NewTextInput("Text_example", "Type_example")}}) // VideoRequest | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.VideosAPI.EstimateVideo(context.Background()).VideoRequest(videoRequest).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `VideosAPI.EstimateVideo``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `EstimateVideo`: EstimateResponse
+	fmt.Fprintf(os.Stdout, "Response from `VideosAPI.EstimateVideo`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiEstimateVideoRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **videoRequest** | [**VideoRequest**](VideoRequest.md) |  | 
+
+### Return type
+
+[**EstimateResponse**](EstimateResponse.md)
 
 ### Authorization
 
