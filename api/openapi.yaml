@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  description: "Unified image, video, and music gateway with separate REST APIs."
+  description: "Provider-neutral image, video, music, speech and voice cloning gateway."
   title: mm-gateway
   version: 0.1.0
 servers:
@@ -1323,6 +1323,607 @@ paths:
       summary: Forward a request through a domain-matched proxy
       tags:
       - proxy
+  /v1/audio:
+    post:
+      operationId: createAudio
+      parameters:
+      - description: Client-generated key used to safely retry this create request.
+          Reuse with a different body returns 409.
+        explode: false
+        in: header
+        name: Idempotency-Key
+        required: false
+        schema:
+          description: Client-generated key used to safely retry this create request.
+            Reuse with a different body returns 409.
+          maxLength: 255
+          minLength: 1
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AudioRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AudioTaskResponse"
+          description: Speech synthesis accepted.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                description: Previously returned ETag; unchanged resources return
+                  304.
+                nullable: true
+                type: string
+              style: simple
+            Idempotency-Replayed:
+              description: true when the response replays an earlier create request.
+              explode: false
+              schema:
+                type: boolean
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                description: Previously returned ETag; unchanged resources return
+                  304.
+                nullable: true
+                type: string
+              style: simple
+            Location:
+              description: Canonical URL of the created task resource.
+              explode: false
+              schema:
+                format: uri
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "409":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Idempotency conflict
+                  value:
+                    code: idempotency_conflict
+                    detail: The Idempotency-Key was already used with a different
+                      request.
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 409
+                    title: Idempotency Conflict
+                    type: urn:mm-gateway:problem:idempotency_conflict
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Idempotency key conflicts with an earlier request.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/audio
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Create a speech task
+      tags:
+      - audio
+  /v1/audio/estimate:
+    post:
+      operationId: estimateAudio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AudioRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateResponse"
+          description: "How auto mode would route the request, and its estimated cost."
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/audio/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Estimate a speech request
+      tags:
+      - audio
+  /v1/audio/{audio_id}:
+    get:
+      operationId: getAudio
+      parameters:
+      - description: Opaque speech task id.
+        explode: false
+        in: path
+        name: audio_id
+        required: true
+        schema:
+          description: Opaque speech task id.
+          title: Audio Id
+          type: string
+        style: simple
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AudioTaskResponse"
+          description: Current speech task state.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "304":
+          description: Unchanged speech task.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: "/v1/audio/{audio_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Retrieve a speech task
+      tags:
+      - audio
   /v1/images:
     post:
       operationId: createImage
@@ -1370,9 +1971,6 @@ paths:
               description: Version identifier for conditional polling.
               explode: false
               schema:
-                description: Previously returned ETag; unchanged resources return
-                  304.
-                nullable: true
                 type: string
               style: simple
             Idempotency-Replayed:
@@ -1385,9 +1983,6 @@ paths:
               description: Canonical task URL with rel="self".
               explode: false
               schema:
-                description: Previously returned ETag; unchanged resources return
-                  304.
-                nullable: true
                 type: string
               style: simple
             Location:
@@ -1968,6 +2563,7 @@ paths:
           - image
           - video
           - music
+          - audio
           nullable: true
           type: string
         style: form
@@ -2203,6 +2799,7 @@ paths:
           - image
           - video
           - music
+          - audio
           nullable: true
           type: string
         style: form
@@ -3858,8 +4455,994 @@ paths:
       summary: Retrieve a video task
       tags:
       - videos
+  /v1/voices:
+    get:
+      operationId: listVoices
+      parameters:
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoiceListResponse"
+          description: Voices available to this key.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "304":
+          description: Unchanged voice list.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: List usable voice presets and owned clones
+      tags:
+      - audio
+    post:
+      operationId: createVoice
+      parameters:
+      - description: Client-generated key used to safely retry this create request.
+          Reuse with a different body returns 409.
+        explode: false
+        in: header
+        name: Idempotency-Key
+        required: false
+        schema:
+          description: Client-generated key used to safely retry this create request.
+            Reuse with a different body returns 409.
+          maxLength: 255
+          minLength: 1
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VoiceCloneRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoiceResponse"
+          description: Voice cloning accepted.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Idempotency-Replayed:
+              description: true when the response replays an earlier create request.
+              explode: false
+              schema:
+                type: boolean
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Location:
+              description: Canonical URL of the created task resource.
+              explode: false
+              schema:
+                format: uri
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "409":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Idempotency conflict
+                  value:
+                    code: idempotency_conflict
+                    detail: The Idempotency-Key was already used with a different
+                      request.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 409
+                    title: Idempotency Conflict
+                    type: urn:mm-gateway:problem:idempotency_conflict
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Idempotency key conflicts with an earlier request.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/voices
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Clone a reusable voice
+      tags:
+      - audio
+  /v1/voices/estimate:
+    post:
+      operationId: estimateVoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VoiceCloneRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EstimateResponse"
+          description: "How auto mode would route the request, and its estimated cost."
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: /v1/voices/estimate
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Estimate voice cloning
+      tags:
+      - audio
+  /v1/voices/{voice_id}:
+    get:
+      operationId: getVoice
+      parameters:
+      - description: Gateway voice id.
+        explode: false
+        in: path
+        name: voice_id
+        required: true
+        schema:
+          description: Gateway voice id.
+          title: Voice Id
+          type: string
+        style: simple
+      - description: Previously returned ETag; unchanged resources return 304.
+        explode: false
+        in: header
+        name: If-None-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoiceResponse"
+          description: Current voice state.
+          headers:
+            ETag:
+              description: Version identifier for conditional polling.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Link:
+              description: Canonical task URL with rel="self".
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Retry-After:
+              description: Suggested number of seconds before polling again.
+              explode: false
+              schema:
+                minimum: 1
+                type: integer
+              style: simple
+        "304":
+          description: Unchanged voice.
+        "400":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Invalid request
+                  value:
+                    code: invalid_request_error
+                    detail: The routing profile is unavailable.
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 400
+                    title: Invalid Request Error
+                    type: urn:mm-gateway:problem:invalid_request_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid request (invalid_request_error / unsupported_feature).
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "403":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Forbidden
+                  value:
+                    code: forbidden
+                    detail: The API key is not allowed to perform this request.
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 403
+                    title: Forbidden
+                    type: urn:mm-gateway:problem:forbidden
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Key not allowed to perform the request (forbidden).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "502":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service error
+                  value:
+                    code: generation_service_error
+                    detail: The generation service returned an error.
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 502
+                    title: Generation Service Error
+                    type: urn:mm-gateway:problem:generation_service_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service returned an error.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+        "504":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service timeout
+                  value:
+                    code: generation_service_timeout
+                    detail: The generation service timed out.
+                    instance: "/v1/voices/{voice_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 504
+                    title: Generation Service Timeout
+                    type: urn:mm-gateway:problem:generation_service_timeout
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Generation service timed out.
+      security:
+      - BearerAuth: []
+      summary: Retrieve a voice or clone task
+      tags:
+      - audio
 components:
   schemas:
+    AudioOutput:
+      additionalProperties: true
+      example:
+        channels: 0
+        duration_seconds: 6.027456183070403
+        mime_type: mime_type
+        sample_rate_hz: 1
+        uri: https://openapi-generator.tech
+      properties:
+        channels:
+          nullable: true
+          type: integer
+        duration_seconds:
+          nullable: true
+          type: number
+        mime_type:
+          nullable: true
+          type: string
+        sample_rate_hz:
+          nullable: true
+          type: integer
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - uri
+      title: AudioOutput
+    AudioParameters:
+      additionalProperties: false
+      properties:
+        bitrate_kbps:
+          maximum: 320.0
+          minimum: 8.0
+          nullable: true
+          type: integer
+        delivery:
+          enum:
+          - remote
+          - inline
+          nullable: true
+          type: string
+        file_format:
+          enum:
+          - mp3
+          - wav
+          - pcm
+          - flac
+          - opus
+          - aac
+          nullable: true
+          type: string
+        instructions:
+          maxLength: 4096
+          minLength: 1
+          nullable: true
+          type: string
+        language:
+          nullable: true
+          pattern: "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+          type: string
+        sample_rate_hz:
+          maximum: 48000.0
+          minimum: 8000.0
+          nullable: true
+          type: integer
+        seed:
+          maximum: 4294967295
+          minimum: 0.0
+          nullable: true
+          type: integer
+        speed:
+          maximum: 4.0
+          minimum: 0.25
+          nullable: true
+          type: number
+        voice:
+          default: default
+          description: A gateway voice id from GET /v1/voices.
+          maxLength: 128
+          minLength: 1
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          title: Voice
+          type: string
+      title: AudioParameters
+    AudioRequest:
+      additionalProperties: {}
+      example:
+        input:
+        - text: Welcome to the gateway.
+          type: text
+        model: gateway-audio-pro
+        parameters:
+          file_format: mp3
+          voice: default
+      properties:
+        input:
+          items:
+            $ref: "#/components/schemas/TextInput"
+          minItems: 1
+          title: Input
+          type: array
+          default: null
+        metadata:
+          additionalProperties: true
+          description: Client-owned metadata returned unchanged with the task.
+          title: Metadata
+          type: object
+        model:
+          description: "Model id returned by GET /v1/models, or omit / set to `auto`\
+            \ to let the gateway auto-route to a backend whose limits fit the request's\
+            \ input (modalities, dimensions, duration, ...)."
+          nullable: true
+          type: string
+        parameters:
+          $ref: "#/components/schemas/AudioParameters"
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingDirective"
+          nullable: true
+      required:
+      - input
+      title: AudioRequest
+    AudioTaskResponse:
+      additionalProperties: {}
+      example:
+        completed_at: 2000-01-23T04:56:07.000+00:00
+        created_at: 2000-01-23T04:56:07.000+00:00
+        error: ""
+        id: id
+        links:
+          self: self
+        metadata:
+          key: ""
+        model: model
+        object: audio
+        outputs:
+        - channels: 0
+          duration_seconds: 6.027456183070403
+          mime_type: mime_type
+          sample_rate_hz: 1
+          uri: https://openapi-generator.tech
+        - channels: 0
+          duration_seconds: 6.027456183070403
+          mime_type: mime_type
+          sample_rate_hz: 1
+          uri: https://openapi-generator.tech
+        routing: ""
+        status: pending
+        usage: ""
+      properties:
+        completed_at:
+          format: date-time
+          nullable: true
+          type: string
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        error:
+          allOf:
+          - $ref: "#/components/schemas/TaskError"
+          nullable: true
+        id:
+          title: Id
+          type: string
+        links:
+          $ref: "#/components/schemas/ResourceLinks"
+        metadata:
+          additionalProperties: true
+          title: Metadata
+          type: object
+        model:
+          title: Model
+          type: string
+        object:
+          default: audio
+          enum:
+          - audio
+          title: Object
+          type: string
+        outputs:
+          items:
+            $ref: "#/components/schemas/AudioOutput"
+          title: Outputs
+          type: array
+          default: null
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingInfo"
+          nullable: true
+        status:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          title: Status
+          type: string
+        usage:
+          allOf:
+          - $ref: "#/components/schemas/Usage"
+          nullable: true
+      required:
+      - created_at
+      - id
+      - links
+      - model
+      - status
+      title: AudioTaskResponse
     BudgetDirective:
       additionalProperties: false
       description: "A client-chosen spend bucket within the key, optionally self-capped."
@@ -4009,6 +5592,7 @@ components:
           - image
           - video
           - music
+          - audio
           title: Modality
           type: string
         model:
@@ -4293,6 +5877,7 @@ components:
           - image
           - video
           - music
+          - audio
           title: Modality
           type: string
         object:
@@ -4334,6 +5919,7 @@ components:
           - image
           - video
           - music
+          - audio
           title: Modality
           type: string
         object:
@@ -4417,6 +6003,7 @@ components:
           - image
           - video
           - music
+          - audio
           title: Modality
           type: string
         model:
@@ -4909,6 +6496,9 @@ components:
         duration_seconds:
           nullable: true
           type: number
+        input_characters:
+          nullable: true
+          type: integer
         input_tokens:
           nullable: true
           type: integer
@@ -5301,6 +6891,249 @@ components:
       - model
       - status
       title: VideoTaskResponse
+    VoiceCloneRequest:
+      additionalProperties: {}
+      example:
+        consent:
+          granted: true
+        input:
+        - type: audio
+          uri: "data:audio/wav;base64,c2FtcGxl"
+        parameters:
+          name: Narrator
+      properties:
+        consent:
+          $ref: "#/components/schemas/VoiceConsent"
+        input:
+          items:
+            $ref: "#/components/schemas/VoiceSampleInput"
+          maxItems: 10
+          minItems: 1
+          title: Input
+          type: array
+          default: null
+        metadata:
+          additionalProperties: true
+          description: Client-owned metadata returned unchanged with the task.
+          title: Metadata
+          type: object
+        model:
+          description: "Model id returned by GET /v1/models, or omit / set to `auto`\
+            \ to let the gateway auto-route to a backend whose limits fit the request's\
+            \ input (modalities, dimensions, duration, ...)."
+          nullable: true
+          type: string
+        parameters:
+          $ref: "#/components/schemas/VoiceParameters"
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingDirective"
+          nullable: true
+      required:
+      - consent
+      - input
+      - parameters
+      title: VoiceCloneRequest
+    VoiceConsent:
+      additionalProperties: false
+      properties:
+        granted:
+          description: The speaker authorized creation and use of this voice.
+          enum:
+          - true
+          title: Granted
+          type: boolean
+        language:
+          nullable: true
+          pattern: "^[a-z]{2,3}$"
+          type: string
+        recording_uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          nullable: true
+          type: string
+      required:
+      - granted
+      title: VoiceConsent
+    VoiceListResponse:
+      additionalProperties: true
+      example:
+        data:
+        - completed_at: 2000-01-23T04:56:07.000+00:00
+          created_at: 2000-01-23T04:56:07.000+00:00
+          error: ""
+          id: id
+          kind: cloned
+          links:
+            self: self
+          metadata:
+            key: ""
+          model: model
+          name: name
+          object: voice
+          routing: ""
+          status: pending
+          usage: ""
+          verification_required: false
+        - completed_at: 2000-01-23T04:56:07.000+00:00
+          created_at: 2000-01-23T04:56:07.000+00:00
+          error: ""
+          id: id
+          kind: cloned
+          links:
+            self: self
+          metadata:
+            key: ""
+          model: model
+          name: name
+          object: voice
+          routing: ""
+          status: pending
+          usage: ""
+          verification_required: false
+        object: list
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/VoiceResponse"
+          title: Data
+          type: array
+          default: null
+        object:
+          default: list
+          enum:
+          - list
+          title: Object
+          type: string
+      required:
+      - data
+      title: VoiceListResponse
+    VoiceParameters:
+      additionalProperties: false
+      properties:
+        description:
+          maxLength: 1000
+          nullable: true
+          type: string
+        name:
+          maxLength: 128
+          minLength: 1
+          pattern: .*\S.*
+          title: Name
+          type: string
+        remove_background_noise:
+          nullable: true
+          type: boolean
+      required:
+      - name
+      title: VoiceParameters
+    VoiceResponse:
+      additionalProperties: {}
+      example:
+        completed_at: 2000-01-23T04:56:07.000+00:00
+        created_at: 2000-01-23T04:56:07.000+00:00
+        error: ""
+        id: id
+        kind: cloned
+        links:
+          self: self
+        metadata:
+          key: ""
+        model: model
+        name: name
+        object: voice
+        routing: ""
+        status: pending
+        usage: ""
+        verification_required: false
+      properties:
+        completed_at:
+          format: date-time
+          nullable: true
+          type: string
+        created_at:
+          format: date-time
+          nullable: true
+          type: string
+        error:
+          allOf:
+          - $ref: "#/components/schemas/TaskError"
+          nullable: true
+        id:
+          title: Id
+          type: string
+        kind:
+          default: cloned
+          enum:
+          - preset
+          - cloned
+          title: Kind
+          type: string
+        links:
+          $ref: "#/components/schemas/ResourceLinks"
+        metadata:
+          additionalProperties: true
+          title: Metadata
+          type: object
+        model:
+          nullable: true
+          type: string
+        name:
+          title: Name
+          type: string
+        object:
+          default: voice
+          enum:
+          - voice
+          title: Object
+          type: string
+        routing:
+          allOf:
+          - $ref: "#/components/schemas/RoutingInfo"
+          nullable: true
+        status:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          title: Status
+          type: string
+        usage:
+          allOf:
+          - $ref: "#/components/schemas/Usage"
+          nullable: true
+        verification_required:
+          default: false
+          title: Verification Required
+          type: boolean
+      required:
+      - id
+      - links
+      - name
+      - status
+      title: VoiceResponse
+    VoiceSampleInput:
+      additionalProperties: false
+      properties:
+        type:
+          enum:
+          - audio
+          title: Type
+          type: string
+        uri:
+          description: Absolute media URI. Inline media uses a base64 data URI.
+          format: uri
+          minLength: 1
+          title: Uri
+          type: string
+      required:
+      - type
+      - uri
+      title: VoiceSampleInput
     Input_inner:
       discriminator:
         mapping:

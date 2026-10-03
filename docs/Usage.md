@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **CostSource** | Pointer to **NullableString** |  | [optional] 
 **Currency** | Pointer to **NullableString** |  | [optional] 
 **DurationSeconds** | Pointer to **NullableFloat32** |  | [optional] 
+**InputCharacters** | Pointer to **NullableInt32** |  | [optional] 
 **InputTokens** | Pointer to **NullableInt32** |  | [optional] 
 **OutputCount** | Pointer to **NullableInt32** |  | [optional] 
 **OutputTokens** | Pointer to **NullableInt32** |  | [optional] 
@@ -172,6 +173,41 @@ HasDurationSeconds returns a boolean if a field has been set.
 `func (o *Usage) UnsetDurationSeconds()`
 
 UnsetDurationSeconds ensures that no value is present for DurationSeconds, not even an explicit nil
+### GetInputCharacters
+
+`func (o *Usage) GetInputCharacters() int32`
+
+GetInputCharacters returns the InputCharacters field if non-nil, zero value otherwise.
+
+### GetInputCharactersOk
+
+`func (o *Usage) GetInputCharactersOk() (*int32, bool)`
+
+GetInputCharactersOk returns a tuple with the InputCharacters field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInputCharacters
+
+`func (o *Usage) SetInputCharacters(v int32)`
+
+SetInputCharacters sets InputCharacters field to given value.
+
+### HasInputCharacters
+
+`func (o *Usage) HasInputCharacters() bool`
+
+HasInputCharacters returns a boolean if a field has been set.
+
+### SetInputCharactersNil
+
+`func (o *Usage) SetInputCharactersNil(b bool)`
+
+ SetInputCharactersNil sets the value for InputCharacters to be an explicit nil
+
+### UnsetInputCharacters
+`func (o *Usage) UnsetInputCharacters()`
+
+UnsetInputCharacters ensures that no value is present for InputCharacters, not even an explicit nil
 ### GetInputTokens
 
 `func (o *Usage) GetInputTokens() int32`

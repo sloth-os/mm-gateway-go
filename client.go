@@ -1,7 +1,7 @@
 /*
 mm-gateway
 
-Unified image, video, and music gateway with separate REST APIs.
+Provider-neutral image, video, music, speech and voice cloning gateway.
 
 API version: 0.1.0
 */
@@ -49,6 +49,8 @@ type APIClient struct {
 
 	// API Services
 
+	AudioAPI *AudioAPIService
+
 	ImagesAPI *ImagesAPIService
 
 	MetaAPI *MetaAPIService
@@ -78,6 +80,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
+	c.AudioAPI = (*AudioAPIService)(&c.common)
 	c.ImagesAPI = (*ImagesAPIService)(&c.common)
 	c.MetaAPI = (*MetaAPIService)(&c.common)
 	c.MusicAPI = (*MusicAPIService)(&c.common)

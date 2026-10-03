@@ -1,7 +1,7 @@
 /*
 mm-gateway
 
-Unified image, video, and music gateway with separate REST APIs.
+Provider-neutral image, video, music, speech and voice cloning gateway.
 
 API version: 0.1.0
 */
@@ -23,6 +23,7 @@ type Usage struct {
 	CostSource NullableString `json:"cost_source,omitempty"`
 	Currency NullableString `json:"currency,omitempty"`
 	DurationSeconds NullableFloat32 `json:"duration_seconds,omitempty"`
+	InputCharacters NullableInt32 `json:"input_characters,omitempty"`
 	InputTokens NullableInt32 `json:"input_tokens,omitempty"`
 	OutputCount NullableInt32 `json:"output_count,omitempty"`
 	OutputTokens NullableInt32 `json:"output_tokens,omitempty"`
@@ -217,6 +218,48 @@ func (o *Usage) UnsetDurationSeconds() {
 	o.DurationSeconds.Unset()
 }
 
+// GetInputCharacters returns the InputCharacters field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Usage) GetInputCharacters() int32 {
+	if o == nil || IsNil(o.InputCharacters.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.InputCharacters.Get()
+}
+
+// GetInputCharactersOk returns a tuple with the InputCharacters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Usage) GetInputCharactersOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InputCharacters.Get(), o.InputCharacters.IsSet()
+}
+
+// HasInputCharacters returns a boolean if a field has been set.
+func (o *Usage) HasInputCharacters() bool {
+	if o != nil && o.InputCharacters.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInputCharacters gets a reference to the given NullableInt32 and assigns it to the InputCharacters field.
+func (o *Usage) SetInputCharacters(v int32) {
+	o.InputCharacters.Set(&v)
+}
+// SetInputCharactersNil sets the value for InputCharacters to be an explicit nil
+func (o *Usage) SetInputCharactersNil() {
+	o.InputCharacters.Set(nil)
+}
+
+// UnsetInputCharacters ensures that no value is present for InputCharacters, not even an explicit nil
+func (o *Usage) UnsetInputCharacters() {
+	o.InputCharacters.Unset()
+}
+
 // GetInputTokens returns the InputTokens field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Usage) GetInputTokens() int32 {
 	if o == nil || IsNil(o.InputTokens.Get()) {
@@ -407,6 +450,9 @@ func (o Usage) ToMap() (map[string]interface{}, error) {
 	if o.DurationSeconds.IsSet() {
 		toSerialize["duration_seconds"] = o.DurationSeconds.Get()
 	}
+	if o.InputCharacters.IsSet() {
+		toSerialize["input_characters"] = o.InputCharacters.Get()
+	}
 	if o.InputTokens.IsSet() {
 		toSerialize["input_tokens"] = o.InputTokens.Get()
 	}
@@ -445,6 +491,7 @@ func (o *Usage) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "cost_source")
 		delete(additionalProperties, "currency")
 		delete(additionalProperties, "duration_seconds")
+		delete(additionalProperties, "input_characters")
 		delete(additionalProperties, "input_tokens")
 		delete(additionalProperties, "output_count")
 		delete(additionalProperties, "output_tokens")

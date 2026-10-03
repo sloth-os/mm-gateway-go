@@ -1,7 +1,7 @@
 /*
 mm-gateway
 
-Unified image, video, and music gateway with separate REST APIs.
+Provider-neutral image, video, music, speech and voice cloning gateway.
 
 API version: 0.1.0
 */
