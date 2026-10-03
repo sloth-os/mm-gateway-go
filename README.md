@@ -81,6 +81,18 @@ Class | Method | HTTP request | Description
 *ImagesAPI* | [**CreateImage**](docs/ImagesAPI.md#createimage) | **Post** /v1/images | Create an image task
 *ImagesAPI* | [**EstimateImage**](docs/ImagesAPI.md#estimateimage) | **Post** /v1/images/estimate | Estimate an image request
 *ImagesAPI* | [**GetImage**](docs/ImagesAPI.md#getimage) | **Get** /v1/images/{image_id} | Retrieve an image task
+*ManagementAPI* | [**DeleteManagementBackend**](docs/ManagementAPI.md#deletemanagementbackend) | **Delete** /v1/management/backends/{name} | Delete Backend
+*ManagementAPI* | [**DeleteManagementKey**](docs/ManagementAPI.md#deletemanagementkey) | **Delete** /v1/management/keys/{key_id} | Delete Key
+*ManagementAPI* | [**DeleteManagementProxy**](docs/ManagementAPI.md#deletemanagementproxy) | **Delete** /v1/management/proxies/{domain} | Delete Proxy
+*ManagementAPI* | [**GetManagementConfig**](docs/ManagementAPI.md#getmanagementconfig) | **Get** /v1/management/config | Get Config
+*ManagementAPI* | [**GetManagementMetrics**](docs/ManagementAPI.md#getmanagementmetrics) | **Get** /v1/management/metrics | Get Metrics
+*ManagementAPI* | [**GetManagementStatus**](docs/ManagementAPI.md#getmanagementstatus) | **Get** /v1/management/status | Get Status
+*ManagementAPI* | [**ListManagementTasks**](docs/ManagementAPI.md#listmanagementtasks) | **Get** /v1/management/tasks | List Tasks
+*ManagementAPI* | [**ListManagementUsage**](docs/ManagementAPI.md#listmanagementusage) | **Get** /v1/management/usage | List Usage
+*ManagementAPI* | [**PutManagementBackend**](docs/ManagementAPI.md#putmanagementbackend) | **Put** /v1/management/backends/{name} | Put Backend
+*ManagementAPI* | [**PutManagementKey**](docs/ManagementAPI.md#putmanagementkey) | **Put** /v1/management/keys/{key_id} | Put Key
+*ManagementAPI* | [**PutManagementProxy**](docs/ManagementAPI.md#putmanagementproxy) | **Put** /v1/management/proxies/{domain} | Put Proxy
+*ManagementAPI* | [**ReplaceManagementConfig**](docs/ManagementAPI.md#replacemanagementconfig) | **Put** /v1/management/config | Replace Config
 *MetaAPI* | [**GetHealth**](docs/MetaAPI.md#gethealth) | **Get** /health | Health
 *MetaAPI* | [**GetMetrics**](docs/MetaAPI.md#getmetrics) | **Get** /metrics | Metrics
 *MetaAPI* | [**ListModelLimits**](docs/MetaAPI.md#listmodellimits) | **Get** /v1/models/limits | List Model Limits
@@ -107,12 +119,16 @@ Class | Method | HTTP request | Description
  - [AudioParameters](docs/AudioParameters.md)
  - [AudioRequest](docs/AudioRequest.md)
  - [AudioTaskResponse](docs/AudioTaskResponse.md)
+ - [BackendCredential](docs/BackendCredential.md)
+ - [BackendRuntime](docs/BackendRuntime.md)
  - [BudgetDirective](docs/BudgetDirective.md)
  - [BudgetState](docs/BudgetState.md)
+ - [CounterSample](docs/CounterSample.md)
  - [Dimensions](docs/Dimensions.md)
  - [EstimateCandidate](docs/EstimateCandidate.md)
  - [EstimateResponse](docs/EstimateResponse.md)
  - [HealthResponse](docs/HealthResponse.md)
+ - [HistogramSample](docs/HistogramSample.md)
  - [ImageInput](docs/ImageInput.md)
  - [ImageOutput](docs/ImageOutput.md)
  - [ImageParameters](docs/ImageParameters.md)
@@ -122,6 +138,20 @@ Class | Method | HTTP request | Description
  - [InputInner1](docs/InputInner1.md)
  - [InputInner2](docs/InputInner2.md)
  - [LyricsInput](docs/LyricsInput.md)
+ - [ManagedBackend](docs/ManagedBackend.md)
+ - [ManagedBudget](docs/ManagedBudget.md)
+ - [ManagedKey](docs/ManagedKey.md)
+ - [ManagedProxy](docs/ManagedProxy.md)
+ - [ManagedRoutingProfile](docs/ManagedRoutingProfile.md)
+ - [ManagedTask](docs/ManagedTask.md)
+ - [ManagedUsage](docs/ManagedUsage.md)
+ - [ManagementConfigInput](docs/ManagementConfigInput.md)
+ - [ManagementConfigOutput](docs/ManagementConfigOutput.md)
+ - [ManagementConfigResponse](docs/ManagementConfigResponse.md)
+ - [ManagementMetrics](docs/ManagementMetrics.md)
+ - [ManagementStatus](docs/ManagementStatus.md)
+ - [ManagementTaskList](docs/ManagementTaskList.md)
+ - [ManagementUsageList](docs/ManagementUsageList.md)
  - [ModelEntry](docs/ModelEntry.md)
  - [ModelLimitsEntry](docs/ModelLimitsEntry.md)
  - [ModelLimitsListResponse](docs/ModelLimitsListResponse.md)
@@ -134,9 +164,12 @@ Class | Method | HTTP request | Description
  - [MusicRequest](docs/MusicRequest.md)
  - [MusicTaskResponse](docs/MusicTaskResponse.md)
  - [ProblemDetail](docs/ProblemDetail.md)
+ - [ProxyAccount](docs/ProxyAccount.md)
+ - [ProxyRuntime](docs/ProxyRuntime.md)
  - [ResourceLinks](docs/ResourceLinks.md)
  - [RoutingDirective](docs/RoutingDirective.md)
  - [RoutingInfo](docs/RoutingInfo.md)
+ - [SelectionHealth](docs/SelectionHealth.md)
  - [TaskError](docs/TaskError.md)
  - [TextInput](docs/TextInput.md)
  - [Usage](docs/Usage.md)
@@ -162,6 +195,17 @@ Class | Method | HTTP request | Description
 
 Authentication schemes defined for the API:
 ### BearerAuth
+
+- **Type**: HTTP Bearer token authentication
+
+Example
+
+```go
+auth := context.WithValue(context.Background(), mmgateway.ContextAccessToken, "BEARER_TOKEN_STRING")
+r, err := client.Service.Operation(auth, args)
+```
+
+### ManagementAuth
 
 - **Type**: HTTP Bearer token authentication
 

@@ -53,6 +53,8 @@ type APIClient struct {
 
 	ImagesAPI *ImagesAPIService
 
+	ManagementAPI *ManagementAPIService
+
 	MetaAPI *MetaAPIService
 
 	MusicAPI *MusicAPIService
@@ -82,6 +84,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	// API Services
 	c.AudioAPI = (*AudioAPIService)(&c.common)
 	c.ImagesAPI = (*ImagesAPIService)(&c.common)
+	c.ManagementAPI = (*ManagementAPIService)(&c.common)
 	c.MetaAPI = (*MetaAPIService)(&c.common)
 	c.MusicAPI = (*MusicAPIService)(&c.common)
 	c.ProxyAPI = (*ProxyAPIService)(&c.common)

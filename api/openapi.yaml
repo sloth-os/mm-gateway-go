@@ -2548,6 +2548,1393 @@ paths:
       summary: Retrieve an image task
       tags:
       - images
+  /v1/management/backends/{name}:
+    delete:
+      operationId: deleteManagementBackend
+      parameters:
+      - explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          title: Name
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Delete Backend
+      tags:
+      - management
+    put:
+      operationId: putManagementBackend
+      parameters:
+      - explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          title: Name
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagedBackend"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/backends/{name}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Put Backend
+      tags:
+      - management
+  /v1/management/config:
+    get:
+      operationId: getManagementConfig
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Request validation failed or a task failed.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Get Config
+      tags:
+      - management
+    put:
+      operationId: replaceManagementConfig
+      parameters:
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagementConfig-Input"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/config
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Replace Config
+      tags:
+      - management
+  /v1/management/keys/{key_id}:
+    delete:
+      operationId: deleteManagementKey
+      parameters:
+      - explode: false
+        in: path
+        name: key_id
+        required: true
+        schema:
+          title: Key Id
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Delete Key
+      tags:
+      - management
+    put:
+      operationId: putManagementKey
+      parameters:
+      - explode: false
+        in: path
+        name: key_id
+        required: true
+        schema:
+          title: Key Id
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagedKey"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/keys/{key_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Put Key
+      tags:
+      - management
+  /v1/management/metrics:
+    get:
+      operationId: getManagementMetrics
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementMetrics"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/metrics
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/metrics
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/metrics
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Request validation failed or a task failed.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/metrics
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Get Metrics
+      tags:
+      - management
+  /v1/management/proxies/{domain}:
+    delete:
+      operationId: deleteManagementProxy
+      parameters:
+      - explode: false
+        in: path
+        name: domain
+        required: true
+        schema:
+          title: Domain
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Delete Proxy
+      tags:
+      - management
+    put:
+      operationId: putManagementProxy
+      parameters:
+      - explode: false
+        in: path
+        name: domain
+        required: true
+        schema:
+          title: Domain
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagedProxy"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementConfigResponse"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/proxies/{domain}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Put Proxy
+      tags:
+      - management
+  /v1/management/status:
+    get:
+      operationId: getManagementStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementStatus"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/status
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/status
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/status
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Request validation failed or a task failed.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/status
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Get Status
+      tags:
+      - management
+  /v1/management/tasks:
+    get:
+      operationId: listManagementTasks
+      parameters:
+      - explode: true
+        in: query
+        name: modality
+        required: false
+        schema:
+          enum:
+          - image
+          - video
+          - music
+          - audio
+          - voice
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: key_id
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: backend
+        required: false
+        schema:
+          description: Previously returned ETag; unchanged resources return 304.
+          nullable: true
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          title: Offset
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 50
+          maximum: 200
+          minimum: 1
+          title: Limit
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementTaskList"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/tasks
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/tasks
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/tasks
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/tasks
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: List Tasks
+      tags:
+      - management
+  /v1/management/usage:
+    get:
+      operationId: listManagementUsage
+      parameters:
+      - explode: true
+        in: query
+        name: key_id
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementUsageList"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/usage
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: List Usage
+      tags:
+      - management
   /v1/models:
     get:
       operationId: listModels
@@ -5443,6 +6830,95 @@ components:
       - model
       - status
       title: AudioTaskResponse
+    BackendCredential:
+      additionalProperties: {}
+      example:
+        api_key: api_key
+        base_url: base_url
+        extra:
+          key: ""
+        id: id
+      properties:
+        api_key:
+          nullable: true
+          type: string
+        base_url:
+          nullable: true
+          type: string
+        extra:
+          additionalProperties: true
+          title: Extra
+          type: object
+        id:
+          pattern: "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+          title: Id
+          type: string
+      required:
+      - id
+      title: BackendCredential
+    BackendRuntime:
+      additionalProperties: false
+      example:
+        accounts:
+        - accounts
+        - accounts
+        active: true
+        configured: true
+        enabled: true
+        models:
+          key:
+          - models
+          - models
+        name: name
+        tags:
+        - tags
+        - tags
+        type: type
+      properties:
+        accounts:
+          items:
+            type: string
+          title: Accounts
+          type: array
+          default: null
+        active:
+          title: Active
+          type: boolean
+        configured:
+          title: Configured
+          type: boolean
+        enabled:
+          title: Enabled
+          type: boolean
+        models:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+            default: null
+          title: Models
+        name:
+          title: Name
+          type: string
+        tags:
+          items:
+            type: string
+          title: Tags
+          type: array
+          default: null
+        type:
+          title: Type
+          type: string
+      required:
+      - accounts
+      - active
+      - configured
+      - enabled
+      - models
+      - name
+      - tags
+      - type
+      title: BackendRuntime
     BudgetDirective:
       additionalProperties: false
       description: "A client-chosen spend bucket within the key, optionally self-capped."
@@ -5495,6 +6971,29 @@ components:
           nullable: true
           type: integer
       title: BudgetState
+    CounterSample:
+      additionalProperties: false
+      example:
+        labels:
+          key: labels
+        name: name
+        value: 0.8008281904610115
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          title: Labels
+        name:
+          title: Name
+          type: string
+        value:
+          title: Value
+          type: number
+      required:
+      - labels
+      - name
+      - value
+      title: CounterSample
     Dimensions:
       additionalProperties: false
       description: Exact output dimensions in pixels.
@@ -5619,6 +7118,49 @@ components:
           title: Status
           type: string
       title: HealthResponse
+    HistogramSample:
+      additionalProperties: false
+      example:
+        count: 6
+        labels:
+          key: labels
+        max: 1.4658129805029452
+        mean: 5.962133916683182
+        min: 5.637376656633329
+        name: name
+        sum: 2.3021358869347655
+      properties:
+        count:
+          title: Count
+          type: integer
+        labels:
+          additionalProperties:
+            type: string
+          title: Labels
+        max:
+          title: Max
+          type: number
+        mean:
+          title: Mean
+          type: number
+        min:
+          title: Min
+          type: number
+        name:
+          title: Name
+          type: string
+        sum:
+          title: Sum
+          type: number
+      required:
+      - count
+      - labels
+      - max
+      - mean
+      - min
+      - name
+      - sum
+      title: HistogramSample
     ImageInput:
       additionalProperties: false
       properties:
@@ -5862,6 +7404,1130 @@ components:
       - text
       - type
       title: LyricsInput
+    ManagedBackend:
+      additionalProperties: {}
+      example:
+        api_key: api_key
+        base_url: base_url
+        credentials:
+        - api_key: api_key
+          base_url: base_url
+          extra:
+            key: ""
+          id: id
+        - api_key: api_key
+          base_url: base_url
+          extra:
+            key: ""
+          id: id
+        enabled: true
+        extra:
+          key: ""
+        name: name
+        tags:
+        - tags
+        - tags
+        type: type
+      properties:
+        api_key:
+          nullable: true
+          type: string
+        base_url:
+          nullable: true
+          type: string
+        credentials:
+          items:
+            $ref: "#/components/schemas/BackendCredential"
+          title: Credentials
+          type: array
+          default: null
+        enabled:
+          default: true
+          title: Enabled
+          type: boolean
+        extra:
+          additionalProperties: true
+          title: Extra
+          type: object
+        name:
+          pattern: "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+          title: Name
+          type: string
+        tags:
+          items:
+            type: string
+          title: Tags
+          type: array
+          default: null
+        type:
+          minLength: 1
+          title: Type
+          type: string
+      required:
+      - name
+      - type
+      title: ManagedBackend
+    ManagedBudget:
+      additionalProperties: false
+      properties:
+        limit_usd:
+          minimum: 0.0
+          nullable: true
+          type: number
+        period:
+          default: month
+          enum:
+          - day
+          - month
+          - total
+          title: Period
+          type: string
+        scopes_limit_usd:
+          minimum: 0.0
+          nullable: true
+          type: number
+      title: ManagedBudget
+    ManagedKey:
+      additionalProperties: {}
+      example:
+        allow_backends:
+        - allow_backends
+        - allow_backends
+        allow_tags:
+        - allow_tags
+        - allow_tags
+        budget: ""
+        default_audio_backend: default_audio_backend
+        default_audio_tag: default_audio_tag
+        default_image_backend: default_image_backend
+        default_image_tag: default_image_tag
+        default_music_backend: default_music_backend
+        default_music_tag: default_music_tag
+        default_video_backend: default_video_backend
+        default_video_tag: default_video_tag
+        deny_tags:
+        - deny_tags
+        - deny_tags
+        enabled: true
+        extra:
+          key: ""
+        id: id
+        key: key
+      properties:
+        allow_backends:
+          items:
+            type: string
+          title: Allow Backends
+          type: array
+          default: null
+        allow_tags:
+          items:
+            type: string
+          title: Allow Tags
+          type: array
+          default: null
+        budget:
+          allOf:
+          - $ref: "#/components/schemas/ManagedBudget"
+          nullable: true
+        default_audio_backend:
+          nullable: true
+          type: string
+        default_audio_tag:
+          nullable: true
+          type: string
+        default_image_backend:
+          nullable: true
+          type: string
+        default_image_tag:
+          nullable: true
+          type: string
+        default_music_backend:
+          nullable: true
+          type: string
+        default_music_tag:
+          nullable: true
+          type: string
+        default_video_backend:
+          nullable: true
+          type: string
+        default_video_tag:
+          nullable: true
+          type: string
+        deny_tags:
+          items:
+            type: string
+          title: Deny Tags
+          type: array
+          default: null
+        enabled:
+          default: true
+          title: Enabled
+          type: boolean
+        extra:
+          additionalProperties: true
+          title: Extra
+          type: object
+        id:
+          pattern: "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+          title: Id
+          type: string
+        key:
+          title: Key
+          type: string
+      required:
+      - id
+      - key
+      title: ManagedKey
+    ManagedProxy:
+      additionalProperties: false
+      example:
+        accounts:
+        - headers:
+            key: headers
+          id: id
+        - headers:
+            key: headers
+          id: id
+        base_url: base_url
+        domain: domain
+        enabled: true
+        headers:
+          key: headers
+        outbound_proxy: outbound_proxy
+        tags:
+        - tags
+        - tags
+        timeout: 0.08008281904610115
+      properties:
+        accounts:
+          items:
+            $ref: "#/components/schemas/ProxyAccount"
+          title: Accounts
+          type: array
+          default: null
+        base_url:
+          title: Base Url
+          type: string
+        domain:
+          nullable: true
+          type: string
+        enabled:
+          default: true
+          title: Enabled
+          type: boolean
+        headers:
+          additionalProperties:
+            type: string
+          title: Headers
+        outbound_proxy:
+          nullable: true
+          type: string
+        tags:
+          items:
+            type: string
+          title: Tags
+          type: array
+          default: null
+        timeout:
+          default: 120
+          exclusiveMinimum: true
+          minimum: 0.0
+          title: Timeout
+          type: number
+      required:
+      - base_url
+      title: ManagedProxy
+    ManagedRoutingProfile:
+      additionalProperties: false
+      example:
+        fallback: none
+        max_cost_usd: 0.6027456183070403
+        optimize: balanced
+        tags:
+        - tags
+        - tags
+      properties:
+        fallback:
+          enum:
+          - none
+          - same_model
+          - any
+          nullable: true
+          type: string
+        max_cost_usd:
+          exclusiveMinimum: true
+          minimum: 0.0
+          nullable: true
+          type: number
+        optimize:
+          enum:
+          - balanced
+          - cost
+          - latency
+          nullable: true
+          type: string
+        tags:
+          items:
+            type: string
+          title: Tags
+          type: array
+          default: null
+      title: ManagedRoutingProfile
+    ManagedTask:
+      additionalProperties: false
+      example:
+        backend: backend
+        completed_at: 0
+        created_at: 6
+        id: id
+        modality: image
+        model: model
+        owner_key_id: owner_key_id
+        status: pending
+      properties:
+        backend:
+          title: Backend
+          type: string
+        completed_at:
+          nullable: true
+          type: integer
+        created_at:
+          title: Created At
+          type: integer
+        id:
+          title: Id
+          type: string
+        modality:
+          enum:
+          - image
+          - video
+          - music
+          - audio
+          - voice
+          title: Modality
+          type: string
+        model:
+          title: Model
+          type: string
+        owner_key_id:
+          title: Owner Key Id
+          type: string
+        status:
+          enum:
+          - pending
+          - running
+          - succeeded
+          - failed
+          - cancelled
+          - expired
+          title: Status
+          type: string
+      required:
+      - backend
+      - created_at
+      - id
+      - modality
+      - model
+      - owner_key_id
+      - status
+      title: ManagedTask
+    ManagedUsage:
+      additionalProperties: false
+      example:
+        enabled: true
+        key_id: key_id
+        usage:
+          currency: USD
+          key:
+            limit_usd: 0.8008281904610115
+            remaining_usd: 6.027456183070403
+            reserved_usd: 1.4658129805029452
+            scope: scope
+            spent_usd: 5.962133916683182
+            tasks: 5
+          models:
+          - modality: image
+            model: model
+            spent_usd: 2.3021358869347655
+            tasks: 7
+          - modality: image
+            model: model
+            spent_usd: 2.3021358869347655
+            tasks: 7
+          object: usage
+          period:
+            end: 2000-01-23T04:56:07.000+00:00
+            kind: day
+            start: 2000-01-23T04:56:07.000+00:00
+          scopes:
+          - limit_usd: 0.8008281904610115
+            remaining_usd: 6.027456183070403
+            reserved_usd: 1.4658129805029452
+            scope: scope
+            spent_usd: 5.962133916683182
+            tasks: 5
+          - limit_usd: 0.8008281904610115
+            remaining_usd: 6.027456183070403
+            reserved_usd: 1.4658129805029452
+            scope: scope
+            spent_usd: 5.962133916683182
+            tasks: 5
+      properties:
+        enabled:
+          title: Enabled
+          type: boolean
+        key_id:
+          title: Key Id
+          type: string
+        usage:
+          $ref: "#/components/schemas/UsageResponse"
+      required:
+      - enabled
+      - key_id
+      - usage
+      title: ManagedUsage
+    ManagementConfig-Input:
+      additionalProperties: {}
+      properties:
+        backends:
+          items:
+            $ref: "#/components/schemas/ManagedBackend"
+          title: Backends
+          type: array
+          default: null
+        budget_allow_unpriced:
+          default: false
+          title: Budget Allow Unpriced
+          type: boolean
+        catalog_models:
+          additionalProperties: true
+          title: Catalog Models
+          type: object
+        keys:
+          items:
+            $ref: "#/components/schemas/ManagedKey"
+          title: Keys
+          type: array
+          default: null
+        outbound_proxy:
+          nullable: true
+          type: string
+        proxies:
+          items:
+            $ref: "#/components/schemas/ManagedProxy"
+          title: Proxies
+          type: array
+          default: null
+        routing_default_optimize:
+          default: balanced
+          enum:
+          - balanced
+          - cost
+          - latency
+          title: Routing Default Optimize
+          type: string
+        routing_profiles:
+          additionalProperties:
+            $ref: "#/components/schemas/ManagedRoutingProfile"
+          title: Routing Profiles
+      title: ManagementConfig
+    ManagementConfig-Output:
+      additionalProperties: false
+      example:
+        backends:
+        - api_key: api_key
+          base_url: base_url
+          credentials:
+          - api_key: api_key
+            base_url: base_url
+            extra:
+              key: ""
+            id: id
+          - api_key: api_key
+            base_url: base_url
+            extra:
+              key: ""
+            id: id
+          enabled: true
+          extra:
+            key: ""
+          name: name
+          tags:
+          - tags
+          - tags
+          type: type
+        - api_key: api_key
+          base_url: base_url
+          credentials:
+          - api_key: api_key
+            base_url: base_url
+            extra:
+              key: ""
+            id: id
+          - api_key: api_key
+            base_url: base_url
+            extra:
+              key: ""
+            id: id
+          enabled: true
+          extra:
+            key: ""
+          name: name
+          tags:
+          - tags
+          - tags
+          type: type
+        budget_allow_unpriced: false
+        catalog_models:
+          key: ""
+        keys:
+        - allow_backends:
+          - allow_backends
+          - allow_backends
+          allow_tags:
+          - allow_tags
+          - allow_tags
+          budget: ""
+          default_audio_backend: default_audio_backend
+          default_audio_tag: default_audio_tag
+          default_image_backend: default_image_backend
+          default_image_tag: default_image_tag
+          default_music_backend: default_music_backend
+          default_music_tag: default_music_tag
+          default_video_backend: default_video_backend
+          default_video_tag: default_video_tag
+          deny_tags:
+          - deny_tags
+          - deny_tags
+          enabled: true
+          extra:
+            key: ""
+          id: id
+          key: key
+        - allow_backends:
+          - allow_backends
+          - allow_backends
+          allow_tags:
+          - allow_tags
+          - allow_tags
+          budget: ""
+          default_audio_backend: default_audio_backend
+          default_audio_tag: default_audio_tag
+          default_image_backend: default_image_backend
+          default_image_tag: default_image_tag
+          default_music_backend: default_music_backend
+          default_music_tag: default_music_tag
+          default_video_backend: default_video_backend
+          default_video_tag: default_video_tag
+          deny_tags:
+          - deny_tags
+          - deny_tags
+          enabled: true
+          extra:
+            key: ""
+          id: id
+          key: key
+        outbound_proxy: outbound_proxy
+        proxies:
+        - accounts:
+          - headers:
+              key: headers
+            id: id
+          - headers:
+              key: headers
+            id: id
+          base_url: base_url
+          domain: domain
+          enabled: true
+          headers:
+            key: headers
+          outbound_proxy: outbound_proxy
+          tags:
+          - tags
+          - tags
+          timeout: 0.08008281904610115
+        - accounts:
+          - headers:
+              key: headers
+            id: id
+          - headers:
+              key: headers
+            id: id
+          base_url: base_url
+          domain: domain
+          enabled: true
+          headers:
+            key: headers
+          outbound_proxy: outbound_proxy
+          tags:
+          - tags
+          - tags
+          timeout: 0.08008281904610115
+        routing_default_optimize: balanced
+        routing_profiles:
+          key:
+            fallback: none
+            max_cost_usd: 0.6027456183070403
+            optimize: balanced
+            tags:
+            - tags
+            - tags
+      properties:
+        backends:
+          items:
+            $ref: "#/components/schemas/ManagedBackend"
+          title: Backends
+          type: array
+          default: null
+        budget_allow_unpriced:
+          default: false
+          title: Budget Allow Unpriced
+          type: boolean
+        catalog_models:
+          additionalProperties: true
+          title: Catalog Models
+          type: object
+        keys:
+          items:
+            $ref: "#/components/schemas/ManagedKey"
+          title: Keys
+          type: array
+          default: null
+        outbound_proxy:
+          nullable: true
+          type: string
+        proxies:
+          items:
+            $ref: "#/components/schemas/ManagedProxy"
+          title: Proxies
+          type: array
+          default: null
+        routing_default_optimize:
+          default: balanced
+          enum:
+          - balanced
+          - cost
+          - latency
+          title: Routing Default Optimize
+          type: string
+        routing_profiles:
+          additionalProperties:
+            $ref: "#/components/schemas/ManagedRoutingProfile"
+          title: Routing Profiles
+      title: ManagementConfig
+    ManagementConfigResponse:
+      additionalProperties: false
+      example:
+        config:
+          backends:
+          - api_key: api_key
+            base_url: base_url
+            credentials:
+            - api_key: api_key
+              base_url: base_url
+              extra:
+                key: ""
+              id: id
+            - api_key: api_key
+              base_url: base_url
+              extra:
+                key: ""
+              id: id
+            enabled: true
+            extra:
+              key: ""
+            name: name
+            tags:
+            - tags
+            - tags
+            type: type
+          - api_key: api_key
+            base_url: base_url
+            credentials:
+            - api_key: api_key
+              base_url: base_url
+              extra:
+                key: ""
+              id: id
+            - api_key: api_key
+              base_url: base_url
+              extra:
+                key: ""
+              id: id
+            enabled: true
+            extra:
+              key: ""
+            name: name
+            tags:
+            - tags
+            - tags
+            type: type
+          budget_allow_unpriced: false
+          catalog_models:
+            key: ""
+          keys:
+          - allow_backends:
+            - allow_backends
+            - allow_backends
+            allow_tags:
+            - allow_tags
+            - allow_tags
+            budget: ""
+            default_audio_backend: default_audio_backend
+            default_audio_tag: default_audio_tag
+            default_image_backend: default_image_backend
+            default_image_tag: default_image_tag
+            default_music_backend: default_music_backend
+            default_music_tag: default_music_tag
+            default_video_backend: default_video_backend
+            default_video_tag: default_video_tag
+            deny_tags:
+            - deny_tags
+            - deny_tags
+            enabled: true
+            extra:
+              key: ""
+            id: id
+            key: key
+          - allow_backends:
+            - allow_backends
+            - allow_backends
+            allow_tags:
+            - allow_tags
+            - allow_tags
+            budget: ""
+            default_audio_backend: default_audio_backend
+            default_audio_tag: default_audio_tag
+            default_image_backend: default_image_backend
+            default_image_tag: default_image_tag
+            default_music_backend: default_music_backend
+            default_music_tag: default_music_tag
+            default_video_backend: default_video_backend
+            default_video_tag: default_video_tag
+            deny_tags:
+            - deny_tags
+            - deny_tags
+            enabled: true
+            extra:
+              key: ""
+            id: id
+            key: key
+          outbound_proxy: outbound_proxy
+          proxies:
+          - accounts:
+            - headers:
+                key: headers
+              id: id
+            - headers:
+                key: headers
+              id: id
+            base_url: base_url
+            domain: domain
+            enabled: true
+            headers:
+              key: headers
+            outbound_proxy: outbound_proxy
+            tags:
+            - tags
+            - tags
+            timeout: 0.08008281904610115
+          - accounts:
+            - headers:
+                key: headers
+              id: id
+            - headers:
+                key: headers
+              id: id
+            base_url: base_url
+            domain: domain
+            enabled: true
+            headers:
+              key: headers
+            outbound_proxy: outbound_proxy
+            tags:
+            - tags
+            - tags
+            timeout: 0.08008281904610115
+          routing_default_optimize: balanced
+          routing_profiles:
+            key:
+              fallback: none
+              max_cost_usd: 0.6027456183070403
+              optimize: balanced
+              tags:
+              - tags
+              - tags
+        persistent: true
+        revision: revision
+      properties:
+        config:
+          $ref: "#/components/schemas/ManagementConfig-Output"
+        persistent:
+          title: Persistent
+          type: boolean
+        revision:
+          title: Revision
+          type: string
+      required:
+      - config
+      - persistent
+      - revision
+      title: ManagementConfigResponse
+    ManagementMetrics:
+      additionalProperties: false
+      example:
+        collected_at: collected_at
+        counters:
+        - labels:
+            key: labels
+          name: name
+          value: 0.8008281904610115
+        - labels:
+            key: labels
+          name: name
+          value: 0.8008281904610115
+        enabled: true
+        histograms:
+        - count: 6
+          labels:
+            key: labels
+          max: 1.4658129805029452
+          mean: 5.962133916683182
+          min: 5.637376656633329
+          name: name
+          sum: 2.3021358869347655
+        - count: 6
+          labels:
+            key: labels
+          max: 1.4658129805029452
+          mean: 5.962133916683182
+          min: 5.637376656633329
+          name: name
+          sum: 2.3021358869347655
+        selection:
+        - account: account
+          attempts: 7
+          backend: backend
+          cooldown_remaining_s: 9.301444243932576
+          latency_s: 3.616076749251911
+          modality: modality
+          model: model
+          rate_limited: true
+          success_rate: 2.027123023002322
+        - account: account
+          attempts: 7
+          backend: backend
+          cooldown_remaining_s: 9.301444243932576
+          latency_s: 3.616076749251911
+          modality: modality
+          model: model
+          rate_limited: true
+          success_rate: 2.027123023002322
+      properties:
+        collected_at:
+          title: Collected At
+          type: string
+        counters:
+          items:
+            $ref: "#/components/schemas/CounterSample"
+          title: Counters
+          type: array
+          default: null
+        enabled:
+          title: Enabled
+          type: boolean
+        histograms:
+          items:
+            $ref: "#/components/schemas/HistogramSample"
+          title: Histograms
+          type: array
+          default: null
+        selection:
+          items:
+            $ref: "#/components/schemas/SelectionHealth"
+          title: Selection
+          type: array
+          default: null
+      required:
+      - collected_at
+      - counters
+      - enabled
+      - histograms
+      - selection
+      title: ManagementMetrics
+    ManagementStatus:
+      additionalProperties: false
+      example:
+        backend_types:
+        - backend_types
+        - backend_types
+        backends:
+        - accounts:
+          - accounts
+          - accounts
+          active: true
+          configured: true
+          enabled: true
+          models:
+            key:
+            - models
+            - models
+          name: name
+          tags:
+          - tags
+          - tags
+          type: type
+        - accounts:
+          - accounts
+          - accounts
+          active: true
+          configured: true
+          enabled: true
+          models:
+            key:
+            - models
+            - models
+          name: name
+          tags:
+          - tags
+          - tags
+          type: type
+        enabled_keys_count: 0
+        keys_count: 6
+        metrics_enabled: true
+        persistent: true
+        proxies:
+        - accounts:
+          - accounts
+          - accounts
+          active: true
+          domain: domain
+          enabled: true
+        - accounts:
+          - accounts
+          - accounts
+          active: true
+          domain: domain
+          enabled: true
+        revision: revision
+        status: ok
+        tasks_by_status:
+          key: 1
+        uptime_seconds: 5.962133916683182
+        version: version
+      properties:
+        backend_types:
+          items:
+            type: string
+          title: Backend Types
+          type: array
+          default: null
+        backends:
+          items:
+            $ref: "#/components/schemas/BackendRuntime"
+          title: Backends
+          type: array
+          default: null
+        enabled_keys_count:
+          title: Enabled Keys Count
+          type: integer
+        keys_count:
+          title: Keys Count
+          type: integer
+        metrics_enabled:
+          title: Metrics Enabled
+          type: boolean
+        persistent:
+          title: Persistent
+          type: boolean
+        proxies:
+          items:
+            $ref: "#/components/schemas/ProxyRuntime"
+          title: Proxies
+          type: array
+          default: null
+        revision:
+          title: Revision
+          type: string
+        status:
+          default: ok
+          enum:
+          - ok
+          title: Status
+          type: string
+        tasks_by_status:
+          additionalProperties:
+            type: integer
+          title: Tasks By Status
+        uptime_seconds:
+          title: Uptime Seconds
+          type: number
+        version:
+          title: Version
+          type: string
+      required:
+      - backend_types
+      - backends
+      - enabled_keys_count
+      - keys_count
+      - metrics_enabled
+      - persistent
+      - proxies
+      - revision
+      - tasks_by_status
+      - uptime_seconds
+      - version
+      title: ManagementStatus
+    ManagementTaskList:
+      additionalProperties: false
+      example:
+        data:
+        - backend: backend
+          completed_at: 0
+          created_at: 6
+          id: id
+          modality: image
+          model: model
+          owner_key_id: owner_key_id
+          status: pending
+        - backend: backend
+          completed_at: 0
+          created_at: 6
+          id: id
+          modality: image
+          model: model
+          owner_key_id: owner_key_id
+          status: pending
+        limit: 1
+        object: list
+        offset: 5
+        total: 5
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/ManagedTask"
+          title: Data
+          type: array
+          default: null
+        limit:
+          title: Limit
+          type: integer
+        object:
+          default: list
+          enum:
+          - list
+          title: Object
+          type: string
+        offset:
+          title: Offset
+          type: integer
+        total:
+          title: Total
+          type: integer
+      required:
+      - data
+      - limit
+      - offset
+      - total
+      title: ManagementTaskList
+    ManagementUsageList:
+      additionalProperties: false
+      example:
+        data:
+        - enabled: true
+          key_id: key_id
+          usage:
+            currency: USD
+            key:
+              limit_usd: 0.8008281904610115
+              remaining_usd: 6.027456183070403
+              reserved_usd: 1.4658129805029452
+              scope: scope
+              spent_usd: 5.962133916683182
+              tasks: 5
+            models:
+            - modality: image
+              model: model
+              spent_usd: 2.3021358869347655
+              tasks: 7
+            - modality: image
+              model: model
+              spent_usd: 2.3021358869347655
+              tasks: 7
+            object: usage
+            period:
+              end: 2000-01-23T04:56:07.000+00:00
+              kind: day
+              start: 2000-01-23T04:56:07.000+00:00
+            scopes:
+            - limit_usd: 0.8008281904610115
+              remaining_usd: 6.027456183070403
+              reserved_usd: 1.4658129805029452
+              scope: scope
+              spent_usd: 5.962133916683182
+              tasks: 5
+            - limit_usd: 0.8008281904610115
+              remaining_usd: 6.027456183070403
+              reserved_usd: 1.4658129805029452
+              scope: scope
+              spent_usd: 5.962133916683182
+              tasks: 5
+        - enabled: true
+          key_id: key_id
+          usage:
+            currency: USD
+            key:
+              limit_usd: 0.8008281904610115
+              remaining_usd: 6.027456183070403
+              reserved_usd: 1.4658129805029452
+              scope: scope
+              spent_usd: 5.962133916683182
+              tasks: 5
+            models:
+            - modality: image
+              model: model
+              spent_usd: 2.3021358869347655
+              tasks: 7
+            - modality: image
+              model: model
+              spent_usd: 2.3021358869347655
+              tasks: 7
+            object: usage
+            period:
+              end: 2000-01-23T04:56:07.000+00:00
+              kind: day
+              start: 2000-01-23T04:56:07.000+00:00
+            scopes:
+            - limit_usd: 0.8008281904610115
+              remaining_usd: 6.027456183070403
+              reserved_usd: 1.4658129805029452
+              scope: scope
+              spent_usd: 5.962133916683182
+              tasks: 5
+            - limit_usd: 0.8008281904610115
+              remaining_usd: 6.027456183070403
+              reserved_usd: 1.4658129805029452
+              scope: scope
+              spent_usd: 5.962133916683182
+              tasks: 5
+        object: list
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/ManagedUsage"
+          title: Data
+          type: array
+          default: null
+        object:
+          default: list
+          enum:
+          - list
+          title: Object
+          type: string
+      required:
+      - data
+      title: ManagementUsageList
     ModelEntry:
       additionalProperties: true
       example:
@@ -6358,6 +9024,55 @@ components:
       - title
       - type
       title: ProblemDetail
+    ProxyAccount:
+      additionalProperties: false
+      example:
+        headers:
+          key: headers
+        id: id
+      properties:
+        headers:
+          additionalProperties:
+            type: string
+          title: Headers
+        id:
+          pattern: "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+          title: Id
+          type: string
+      required:
+      - id
+      title: ProxyAccount
+    ProxyRuntime:
+      additionalProperties: false
+      example:
+        accounts:
+        - accounts
+        - accounts
+        active: true
+        domain: domain
+        enabled: true
+      properties:
+        accounts:
+          items:
+            type: string
+          title: Accounts
+          type: array
+          default: null
+        active:
+          title: Active
+          type: boolean
+        domain:
+          title: Domain
+          type: string
+        enabled:
+          title: Enabled
+          type: boolean
+      required:
+      - accounts
+      - active
+      - domain
+      - enabled
+      title: ProxyRuntime
     ResourceLinks:
       additionalProperties: true
       example:
@@ -6446,6 +9161,57 @@ components:
       required:
       - requested_model
       title: RoutingInfo
+    SelectionHealth:
+      additionalProperties: false
+      example:
+        account: account
+        attempts: 7
+        backend: backend
+        cooldown_remaining_s: 9.301444243932576
+        latency_s: 3.616076749251911
+        modality: modality
+        model: model
+        rate_limited: true
+        success_rate: 2.027123023002322
+      properties:
+        account:
+          title: Account
+          type: string
+        attempts:
+          title: Attempts
+          type: integer
+        backend:
+          title: Backend
+          type: string
+        cooldown_remaining_s:
+          title: Cooldown Remaining S
+          type: number
+        latency_s:
+          nullable: true
+          type: number
+        modality:
+          title: Modality
+          type: string
+        model:
+          nullable: true
+          type: string
+        rate_limited:
+          title: Rate Limited
+          type: boolean
+        success_rate:
+          nullable: true
+          type: number
+      required:
+      - account
+      - attempts
+      - backend
+      - cooldown_remaining_s
+      - latency_s
+      - modality
+      - model
+      - rate_limited
+      - success_rate
+      title: SelectionHealth
     TaskError:
       additionalProperties: true
       properties:
@@ -7173,5 +9939,10 @@ components:
     BearerAuth:
       bearerFormat: API key
       description: "Front-end API key sent as \"Authorization: Bearer <token>\"."
+      scheme: bearer
+      type: http
+    ManagementAuth:
+      bearerFormat: Management API key
+      description: Separate admin token configured by MANAGEMENT_API_KEY.
       scheme: bearer
       type: http
