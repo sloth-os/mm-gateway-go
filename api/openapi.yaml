@@ -3537,6 +3537,715 @@ paths:
       summary: Get Metrics
       tags:
       - management
+  /v1/management/plugins:
+    get:
+      description: "Discover bundled, local and installed GitHub plugins without executing\
+        \ them."
+      operationId: getManagementPluginStore
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PluginStore"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/plugins
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/plugins
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/plugins
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Request validation failed or a task failed.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/plugins
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Get Store
+      tags:
+      - management
+  /v1/management/plugins/install:
+    post:
+      description: "Fetch a public GitHub package, validate it, persist and atomically\
+        \ activate it."
+      operationId: installManagementGitHubPlugin
+      parameters:
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GitHubPluginInstall"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PluginStore"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: /v1/management/plugins/install
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: /v1/management/plugins/install
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: /v1/management/plugins/install
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: /v1/management/plugins/install
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Install Github
+      tags:
+      - management
+  /v1/management/plugins/{plugin_id}:
+    delete:
+      description: "Uninstall, releasing old generations after their in-flight requests\
+        \ complete."
+      operationId: deleteManagementPlugin
+      parameters:
+      - explode: false
+        in: path
+        name: plugin_id
+        required: true
+        schema:
+          title: Plugin Id
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PluginStore"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Delete Plugin
+      tags:
+      - management
+    put:
+      description: "Install a catalog plugin or change its enabled state, config,\
+        \ order or hook policy."
+      operationId: putManagementPlugin
+      parameters:
+      - explode: false
+        in: path
+        name: plugin_id
+        required: true
+        schema:
+          title: Plugin Id
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PluginOptions"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PluginStore"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/plugins/{plugin_id}"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Put Plugin
+      tags:
+      - management
+  /v1/management/plugins/{plugin_id}/reload:
+    post:
+      description: Reload from disk. A failed reload leaves the last working generation
+        active.
+      operationId: reloadManagementPlugin
+      parameters:
+      - explode: false
+        in: path
+        name: plugin_id
+        required: true
+        schema:
+          title: Plugin Id
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PluginStore"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/plugins/{plugin_id}/reload"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/plugins/{plugin_id}/reload"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/plugins/{plugin_id}/reload"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/plugins/{plugin_id}/reload"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Reload Plugin
+      tags:
+      - management
+  /v1/management/plugins/{plugin_id}/update:
+    post:
+      description: Re-fetch the installed GitHub ref and activate it only after validation.
+      operationId: updateManagementGitHubPlugin
+      parameters:
+      - explode: false
+        in: path
+        name: plugin_id
+        required: true
+        schema:
+          title: Plugin Id
+          type: string
+        style: simple
+      - description: Current configuration revision (ETag).
+        explode: false
+        in: header
+        name: If-Match
+        required: false
+        schema:
+          description: Current configuration revision (ETag).
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PluginStore"
+          description: Successful Response
+        "401":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Missing API key
+                  value:
+                    code: unauthorized
+                    detail: "Missing API key. Send an 'Authorization: Bearer <token>'\
+                      \ header."
+                    instance: "/v1/management/plugins/{plugin_id}/update"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 401
+                    title: Unauthorized
+                    type: urn:mm-gateway:problem:unauthorized
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing or unknown API key (unauthorized).
+        "404":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Unknown task
+                  value:
+                    code: task_not_found
+                    detail: image task img_unknown not found
+                    instance: "/v1/management/plugins/{plugin_id}/update"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 404
+                    title: Task Not Found
+                    type: urn:mm-gateway:problem:task_not_found
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Model or task not found.
+        "412":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Configuration changed; reload before saving.
+        "422":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Validation failed
+                  value:
+                    code: validation_error
+                    detail: Request validation failed.
+                    errors:
+                    - loc:
+                      - body
+                      - model
+                      msg: Field required
+                      type: missing
+                    instance: "/v1/management/plugins/{plugin_id}/update"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 422
+                    title: Validation Error
+                    type: urn:mm-gateway:problem:validation_error
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Validation Error
+        "428":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: A current If-Match revision is required.
+        "503":
+          content:
+            application/problem+json:
+              examples:
+                error:
+                  summary: Generation service unavailable
+                  value:
+                    code: generation_service_unavailable
+                    detail: No generation service is available for this request.
+                    instance: "/v1/management/plugins/{plugin_id}/update"
+                    request_id: req_01HZX4J3K7NQ8X2V9Y6R5W4T3P
+                    status: 503
+                    title: Generation Service Unavailable
+                    type: urn:mm-gateway:problem:generation_service_unavailable
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: No usable generation service is configured.
+      security:
+      - ManagementAuth: []
+      summary: Update Plugin
+      tags:
+      - management
   /v1/management/proxies/{domain}:
     delete:
       operationId: deleteManagementProxy
@@ -7301,7 +8010,7 @@ components:
           type: string
         reason:
           description: "Why the candidate is not admissible: limits, retired, max_cost,\
-            \ unpriced or budget."
+            \ unpriced, budget or plugin_policy."
           nullable: true
           type: string
       required:
@@ -7368,6 +8077,40 @@ components:
       required:
       - modality
       title: EstimateResponse
+    GitHubPluginInstall:
+      additionalProperties: false
+      example:
+        options:
+          config:
+            key: ""
+          enabled: true
+          failure_mode: closed
+          order: -8398
+          timeout_ms: 18086
+        ref: HEAD
+        repository: repository
+        subdirectory: ""
+      properties:
+        options:
+          $ref: "#/components/schemas/PluginOptions"
+        ref:
+          default: HEAD
+          description: "Branch, tag or commit to fetch."
+          maxLength: 200
+          title: Ref
+          type: string
+        repository:
+          description: HTTPS GitHub repository URL.
+          title: Repository
+          type: string
+        subdirectory:
+          default: ""
+          maxLength: 300
+          title: Subdirectory
+          type: string
+      required:
+      - repository
+      title: GitHubPluginInstall
     HealthResponse:
       additionalProperties: true
       example:
@@ -7872,6 +8615,7 @@ components:
         - headers:
             key: headers
           id: id
+        auth_plugin: auth_plugin
         base_url: base_url
         domain: domain
         enabled: true
@@ -7889,6 +8633,10 @@ components:
           title: Accounts
           type: array
           default: null
+        auth_plugin:
+          description: Plugin providing on_backend_request for HTTP proxy authentication.
+          nullable: true
+          type: string
         base_url:
           title: Base Url
           type: string
@@ -8185,6 +8933,7 @@ components:
           - headers:
               key: headers
             id: id
+          auth_plugin: auth_plugin
           base_url: base_url
           domain: domain
           enabled: true
@@ -8202,6 +8951,7 @@ components:
           - headers:
               key: headers
             id: id
+          auth_plugin: auth_plugin
           base_url: base_url
           domain: domain
           enabled: true
@@ -8380,6 +9130,7 @@ components:
             - headers:
                 key: headers
               id: id
+            auth_plugin: auth_plugin
             base_url: base_url
             domain: domain
             enabled: true
@@ -8397,6 +9148,7 @@ components:
             - headers:
                 key: headers
               id: id
+            auth_plugin: auth_plugin
             base_url: base_url
             domain: domain
             enabled: true
@@ -9233,6 +9985,333 @@ components:
       - model
       - status
       title: MusicTaskResponse
+    PluginDiscoveryError:
+      additionalProperties: false
+      example:
+        error: error
+        path: path
+      properties:
+        error:
+          title: Error
+          type: string
+        path:
+          title: Path
+          type: string
+      required:
+      - error
+      - path
+      title: PluginDiscoveryError
+    PluginEntry:
+      additionalProperties: false
+      example:
+        active: false
+        calls: 0
+        error: error
+        failures: 6
+        generation: generation
+        id: id
+        installed: false
+        loaded_at: 1.4658129805029452
+        manifest: ""
+        options: ""
+        source:
+          commit: commit
+          kind: builtin
+          path: ""
+          ref: ref
+          repository: repository
+          subdirectory: ""
+      properties:
+        active:
+          default: false
+          title: Active
+          type: boolean
+        calls:
+          default: 0
+          title: Calls
+          type: integer
+        error:
+          nullable: true
+          type: string
+        failures:
+          default: 0
+          title: Failures
+          type: integer
+        generation:
+          nullable: true
+          type: string
+        id:
+          title: Id
+          type: string
+        installed:
+          default: false
+          title: Installed
+          type: boolean
+        loaded_at:
+          nullable: true
+          type: number
+        manifest:
+          allOf:
+          - $ref: "#/components/schemas/PluginManifest"
+          nullable: true
+        options:
+          allOf:
+          - $ref: "#/components/schemas/PluginOptions"
+          nullable: true
+        source:
+          $ref: "#/components/schemas/PluginSource"
+      required:
+      - id
+      - source
+      title: PluginEntry
+    PluginManifest:
+      additionalProperties: {}
+      properties:
+        api_version:
+          default: "1"
+          enum:
+          - "1"
+          title: Api Version
+          type: string
+        author:
+          default: ""
+          maxLength: 120
+          title: Author
+          type: string
+        backend_types:
+          description: Backend types for automatic authentication hooks; * matches
+            all.
+          items:
+            type: string
+          title: Backend Types
+          type: array
+          default: null
+        default_config:
+          additionalProperties: true
+          title: Default Config
+          type: object
+        description:
+          default: ""
+          maxLength: 2000
+          title: Description
+          type: string
+        homepage:
+          maxLength: 500
+          nullable: true
+          type: string
+        hooks:
+          items:
+            enum:
+            - on_request
+            - on_response
+            - on_response_chunk
+            - prepare_backend
+            - on_backend_request
+            - route
+            type: string
+          title: Hooks
+          type: array
+          default: null
+        id:
+          pattern: "^[a-z][a-z0-9_-]{0,63}$"
+          title: Id
+          type: string
+        methods:
+          items:
+            type: string
+          title: Methods
+          type: array
+          default: null
+        name:
+          maxLength: 120
+          minLength: 1
+          title: Name
+          type: string
+        paths:
+          items:
+            type: string
+          title: Paths
+          type: array
+          default: null
+        providers:
+          description: New provider types exported by this plugin.
+          items:
+            type: string
+          title: Providers
+          type: array
+          default: null
+        response_body:
+          default: none
+          enum:
+          - none
+          - json
+          title: Response Body
+          type: string
+        version:
+          maxLength: 80
+          minLength: 1
+          title: Version
+          type: string
+      required:
+      - id
+      - name
+      - version
+      title: PluginManifest
+    PluginOptions:
+      additionalProperties: {}
+      example:
+        config:
+          key: ""
+        enabled: true
+        failure_mode: closed
+        order: -8398
+        timeout_ms: 18086
+      properties:
+        config:
+          additionalProperties: true
+          title: Config
+          type: object
+        enabled:
+          default: true
+          title: Enabled
+          type: boolean
+        failure_mode:
+          default: closed
+          enum:
+          - closed
+          - open
+          title: Failure Mode
+          type: string
+        order:
+          default: 0
+          maximum: 10000.0
+          minimum: -10000.0
+          title: Order
+          type: integer
+        timeout_ms:
+          default: 1000
+          maximum: 30000.0
+          minimum: 10.0
+          title: Timeout Ms
+          type: integer
+      title: PluginOptions
+    PluginSource:
+      additionalProperties: false
+      example:
+        commit: commit
+        kind: builtin
+        path: ""
+        ref: ref
+        repository: repository
+        subdirectory: ""
+      properties:
+        commit:
+          nullable: true
+          type: string
+        kind:
+          enum:
+          - builtin
+          - local
+          - github
+          title: Kind
+          type: string
+        path:
+          default: ""
+          title: Path
+          type: string
+        ref:
+          nullable: true
+          type: string
+        repository:
+          nullable: true
+          type: string
+        subdirectory:
+          default: ""
+          title: Subdirectory
+          type: string
+      required:
+      - kind
+      title: PluginSource
+    PluginStore:
+      additionalProperties: false
+      example:
+        data:
+        - active: false
+          calls: 0
+          error: error
+          failures: 6
+          generation: generation
+          id: id
+          installed: false
+          loaded_at: 1.4658129805029452
+          manifest: ""
+          options: ""
+          source:
+            commit: commit
+            kind: builtin
+            path: ""
+            ref: ref
+            repository: repository
+            subdirectory: ""
+        - active: false
+          calls: 0
+          error: error
+          failures: 6
+          generation: generation
+          id: id
+          installed: false
+          loaded_at: 1.4658129805029452
+          manifest: ""
+          options: ""
+          source:
+            commit: commit
+            kind: builtin
+            path: ""
+            ref: ref
+            repository: repository
+            subdirectory: ""
+        directory: directory
+        errors:
+        - error: error
+          path: path
+        - error: error
+          path: path
+        persistent: true
+        revision: revision
+        watching: true
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/PluginEntry"
+          title: Data
+          type: array
+          default: null
+        directory:
+          title: Directory
+          type: string
+        errors:
+          items:
+            $ref: "#/components/schemas/PluginDiscoveryError"
+          title: Errors
+          type: array
+          default: null
+        persistent:
+          title: Persistent
+          type: boolean
+        revision:
+          title: Revision
+          type: string
+        watching:
+          title: Watching
+          type: boolean
+      required:
+      - data
+      - directory
+      - errors
+      - persistent
+      - revision
+      - watching
+      title: PluginStore
     ProblemDetail:
       additionalProperties: {}
       description: RFC 9457 problem details with stable gateway extensions.

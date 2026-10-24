@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Accounts** | Pointer to [**[]ProxyAccount**](ProxyAccount.md) |  | [optional] 
+**AuthPlugin** | Pointer to **NullableString** | Plugin providing on_backend_request for HTTP proxy authentication. | [optional] 
 **BaseUrl** | **string** |  | 
 **Domain** | Pointer to **NullableString** |  | [optional] 
 **Enabled** | Pointer to **bool** |  | [optional] [default to true]
@@ -57,6 +58,41 @@ SetAccounts sets Accounts field to given value.
 
 HasAccounts returns a boolean if a field has been set.
 
+### GetAuthPlugin
+
+`func (o *ManagedProxy) GetAuthPlugin() string`
+
+GetAuthPlugin returns the AuthPlugin field if non-nil, zero value otherwise.
+
+### GetAuthPluginOk
+
+`func (o *ManagedProxy) GetAuthPluginOk() (*string, bool)`
+
+GetAuthPluginOk returns a tuple with the AuthPlugin field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAuthPlugin
+
+`func (o *ManagedProxy) SetAuthPlugin(v string)`
+
+SetAuthPlugin sets AuthPlugin field to given value.
+
+### HasAuthPlugin
+
+`func (o *ManagedProxy) HasAuthPlugin() bool`
+
+HasAuthPlugin returns a boolean if a field has been set.
+
+### SetAuthPluginNil
+
+`func (o *ManagedProxy) SetAuthPluginNil(b bool)`
+
+ SetAuthPluginNil sets the value for AuthPlugin to be an explicit nil
+
+### UnsetAuthPlugin
+`func (o *ManagedProxy) UnsetAuthPlugin()`
+
+UnsetAuthPlugin ensures that no value is present for AuthPlugin, not even an explicit nil
 ### GetBaseUrl
 
 `func (o *ManagedProxy) GetBaseUrl() string`

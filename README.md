@@ -83,18 +83,24 @@ Class | Method | HTTP request | Description
 *ImagesAPI* | [**GetImage**](docs/ImagesAPI.md#getimage) | **Get** /v1/images/{image_id} | Retrieve an image task
 *ManagementAPI* | [**DeleteManagementBackend**](docs/ManagementAPI.md#deletemanagementbackend) | **Delete** /v1/management/backends/{name} | Delete Backend
 *ManagementAPI* | [**DeleteManagementKey**](docs/ManagementAPI.md#deletemanagementkey) | **Delete** /v1/management/keys/{key_id} | Delete Key
+*ManagementAPI* | [**DeleteManagementPlugin**](docs/ManagementAPI.md#deletemanagementplugin) | **Delete** /v1/management/plugins/{plugin_id} | Delete Plugin
 *ManagementAPI* | [**DeleteManagementProxy**](docs/ManagementAPI.md#deletemanagementproxy) | **Delete** /v1/management/proxies/{domain} | Delete Proxy
 *ManagementAPI* | [**DiscoverManagementBackendModels**](docs/ManagementAPI.md#discovermanagementbackendmodels) | **Post** /v1/management/backends/discover-models | Discover Backend Models
 *ManagementAPI* | [**GetManagementBuiltinModels**](docs/ManagementAPI.md#getmanagementbuiltinmodels) | **Get** /v1/management/backend-types/{provider_type}/models | Get Builtin Models
 *ManagementAPI* | [**GetManagementConfig**](docs/ManagementAPI.md#getmanagementconfig) | **Get** /v1/management/config | Get Config
 *ManagementAPI* | [**GetManagementMetrics**](docs/ManagementAPI.md#getmanagementmetrics) | **Get** /v1/management/metrics | Get Metrics
+*ManagementAPI* | [**GetManagementPluginStore**](docs/ManagementAPI.md#getmanagementpluginstore) | **Get** /v1/management/plugins | Get Store
 *ManagementAPI* | [**GetManagementStatus**](docs/ManagementAPI.md#getmanagementstatus) | **Get** /v1/management/status | Get Status
+*ManagementAPI* | [**InstallManagementGitHubPlugin**](docs/ManagementAPI.md#installmanagementgithubplugin) | **Post** /v1/management/plugins/install | Install Github
 *ManagementAPI* | [**ListManagementTasks**](docs/ManagementAPI.md#listmanagementtasks) | **Get** /v1/management/tasks | List Tasks
 *ManagementAPI* | [**ListManagementUsage**](docs/ManagementAPI.md#listmanagementusage) | **Get** /v1/management/usage | List Usage
 *ManagementAPI* | [**PutManagementBackend**](docs/ManagementAPI.md#putmanagementbackend) | **Put** /v1/management/backends/{name} | Put Backend
 *ManagementAPI* | [**PutManagementKey**](docs/ManagementAPI.md#putmanagementkey) | **Put** /v1/management/keys/{key_id} | Put Key
+*ManagementAPI* | [**PutManagementPlugin**](docs/ManagementAPI.md#putmanagementplugin) | **Put** /v1/management/plugins/{plugin_id} | Put Plugin
 *ManagementAPI* | [**PutManagementProxy**](docs/ManagementAPI.md#putmanagementproxy) | **Put** /v1/management/proxies/{domain} | Put Proxy
+*ManagementAPI* | [**ReloadManagementPlugin**](docs/ManagementAPI.md#reloadmanagementplugin) | **Post** /v1/management/plugins/{plugin_id}/reload | Reload Plugin
 *ManagementAPI* | [**ReplaceManagementConfig**](docs/ManagementAPI.md#replacemanagementconfig) | **Put** /v1/management/config | Replace Config
+*ManagementAPI* | [**UpdateManagementGitHubPlugin**](docs/ManagementAPI.md#updatemanagementgithubplugin) | **Post** /v1/management/plugins/{plugin_id}/update | Update Plugin
 *MetaAPI* | [**GetHealth**](docs/MetaAPI.md#gethealth) | **Get** /health | Health
 *MetaAPI* | [**GetMetrics**](docs/MetaAPI.md#getmetrics) | **Get** /metrics | Metrics
 *MetaAPI* | [**ListModelLimits**](docs/MetaAPI.md#listmodellimits) | **Get** /v1/models/limits | List Model Limits
@@ -132,6 +138,7 @@ Class | Method | HTTP request | Description
  - [DiscoveredModel](docs/DiscoveredModel.md)
  - [EstimateCandidate](docs/EstimateCandidate.md)
  - [EstimateResponse](docs/EstimateResponse.md)
+ - [GitHubPluginInstall](docs/GitHubPluginInstall.md)
  - [HealthResponse](docs/HealthResponse.md)
  - [HistogramSample](docs/HistogramSample.md)
  - [ImageInput](docs/ImageInput.md)
@@ -167,6 +174,12 @@ Class | Method | HTTP request | Description
  - [MusicParameters](docs/MusicParameters.md)
  - [MusicRequest](docs/MusicRequest.md)
  - [MusicTaskResponse](docs/MusicTaskResponse.md)
+ - [PluginDiscoveryError](docs/PluginDiscoveryError.md)
+ - [PluginEntry](docs/PluginEntry.md)
+ - [PluginManifest](docs/PluginManifest.md)
+ - [PluginOptions](docs/PluginOptions.md)
+ - [PluginSource](docs/PluginSource.md)
+ - [PluginStore](docs/PluginStore.md)
  - [ProblemDetail](docs/ProblemDetail.md)
  - [ProxyAccount](docs/ProxyAccount.md)
  - [ProxyRuntime](docs/ProxyRuntime.md)

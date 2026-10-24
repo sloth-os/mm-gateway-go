@@ -29,6 +29,7 @@ docs/Dimensions.md
 docs/DiscoveredModel.md
 docs/EstimateCandidate.md
 docs/EstimateResponse.md
+docs/GitHubPluginInstall.md
 docs/HealthResponse.md
 docs/HistogramSample.md
 docs/ImageInput.md
@@ -68,6 +69,12 @@ docs/MusicOutput.md
 docs/MusicParameters.md
 docs/MusicRequest.md
 docs/MusicTaskResponse.md
+docs/PluginDiscoveryError.md
+docs/PluginEntry.md
+docs/PluginManifest.md
+docs/PluginOptions.md
+docs/PluginSource.md
+docs/PluginStore.md
 docs/ProblemDetail.md
 docs/ProxyAPI.md
 docs/ProxyAccount.md
@@ -114,6 +121,7 @@ model_dimensions.go
 model_discovered_model.go
 model_estimate_candidate.go
 model_estimate_response.go
+model_git_hub_plugin_install.go
 model_health_response.go
 model_histogram_sample.go
 model_image_input.go
@@ -149,6 +157,12 @@ model_music_output.go
 model_music_parameters.go
 model_music_request.go
 model_music_task_response.go
+model_plugin_discovery_error.go
+model_plugin_entry.go
+model_plugin_manifest.go
+model_plugin_options.go
+model_plugin_source.go
+model_plugin_store.go
 model_problem_detail.go
 model_proxy_account.go
 model_proxy_runtime.go

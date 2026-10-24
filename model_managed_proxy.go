@@ -22,6 +22,8 @@ var _ MappedNullable = &ManagedProxy{}
 // ManagedProxy struct for ManagedProxy
 type ManagedProxy struct {
 	Accounts []ProxyAccount `json:"accounts,omitempty"`
+	// Plugin providing on_backend_request for HTTP proxy authentication.
+	AuthPlugin NullableString `json:"auth_plugin,omitempty"`
 	BaseUrl string `json:"base_url"`
 	Domain NullableString `json:"domain,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
@@ -89,6 +91,48 @@ func (o *ManagedProxy) HasAccounts() bool {
 // SetAccounts gets a reference to the given []ProxyAccount and assigns it to the Accounts field.
 func (o *ManagedProxy) SetAccounts(v []ProxyAccount) {
 	o.Accounts = v
+}
+
+// GetAuthPlugin returns the AuthPlugin field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ManagedProxy) GetAuthPlugin() string {
+	if o == nil || IsNil(o.AuthPlugin.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.AuthPlugin.Get()
+}
+
+// GetAuthPluginOk returns a tuple with the AuthPlugin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ManagedProxy) GetAuthPluginOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AuthPlugin.Get(), o.AuthPlugin.IsSet()
+}
+
+// HasAuthPlugin returns a boolean if a field has been set.
+func (o *ManagedProxy) HasAuthPlugin() bool {
+	if o != nil && o.AuthPlugin.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthPlugin gets a reference to the given NullableString and assigns it to the AuthPlugin field.
+func (o *ManagedProxy) SetAuthPlugin(v string) {
+	o.AuthPlugin.Set(&v)
+}
+// SetAuthPluginNil sets the value for AuthPlugin to be an explicit nil
+func (o *ManagedProxy) SetAuthPluginNil() {
+	o.AuthPlugin.Set(nil)
+}
+
+// UnsetAuthPlugin ensures that no value is present for AuthPlugin, not even an explicit nil
+func (o *ManagedProxy) UnsetAuthPlugin() {
+	o.AuthPlugin.Unset()
 }
 
 // GetBaseUrl returns the BaseUrl field value
@@ -339,6 +383,9 @@ func (o ManagedProxy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Accounts) {
 		toSerialize["accounts"] = o.Accounts
+	}
+	if o.AuthPlugin.IsSet() {
+		toSerialize["auth_plugin"] = o.AuthPlugin.Get()
 	}
 	toSerialize["base_url"] = o.BaseUrl
 	if o.Domain.IsSet() {

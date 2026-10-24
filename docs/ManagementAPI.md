@@ -6,18 +6,24 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**DeleteManagementBackend**](ManagementAPI.md#DeleteManagementBackend) | **Delete** /v1/management/backends/{name} | Delete Backend
 [**DeleteManagementKey**](ManagementAPI.md#DeleteManagementKey) | **Delete** /v1/management/keys/{key_id} | Delete Key
+[**DeleteManagementPlugin**](ManagementAPI.md#DeleteManagementPlugin) | **Delete** /v1/management/plugins/{plugin_id} | Delete Plugin
 [**DeleteManagementProxy**](ManagementAPI.md#DeleteManagementProxy) | **Delete** /v1/management/proxies/{domain} | Delete Proxy
 [**DiscoverManagementBackendModels**](ManagementAPI.md#DiscoverManagementBackendModels) | **Post** /v1/management/backends/discover-models | Discover Backend Models
 [**GetManagementBuiltinModels**](ManagementAPI.md#GetManagementBuiltinModels) | **Get** /v1/management/backend-types/{provider_type}/models | Get Builtin Models
 [**GetManagementConfig**](ManagementAPI.md#GetManagementConfig) | **Get** /v1/management/config | Get Config
 [**GetManagementMetrics**](ManagementAPI.md#GetManagementMetrics) | **Get** /v1/management/metrics | Get Metrics
+[**GetManagementPluginStore**](ManagementAPI.md#GetManagementPluginStore) | **Get** /v1/management/plugins | Get Store
 [**GetManagementStatus**](ManagementAPI.md#GetManagementStatus) | **Get** /v1/management/status | Get Status
+[**InstallManagementGitHubPlugin**](ManagementAPI.md#InstallManagementGitHubPlugin) | **Post** /v1/management/plugins/install | Install Github
 [**ListManagementTasks**](ManagementAPI.md#ListManagementTasks) | **Get** /v1/management/tasks | List Tasks
 [**ListManagementUsage**](ManagementAPI.md#ListManagementUsage) | **Get** /v1/management/usage | List Usage
 [**PutManagementBackend**](ManagementAPI.md#PutManagementBackend) | **Put** /v1/management/backends/{name} | Put Backend
 [**PutManagementKey**](ManagementAPI.md#PutManagementKey) | **Put** /v1/management/keys/{key_id} | Put Key
+[**PutManagementPlugin**](ManagementAPI.md#PutManagementPlugin) | **Put** /v1/management/plugins/{plugin_id} | Put Plugin
 [**PutManagementProxy**](ManagementAPI.md#PutManagementProxy) | **Put** /v1/management/proxies/{domain} | Put Proxy
+[**ReloadManagementPlugin**](ManagementAPI.md#ReloadManagementPlugin) | **Post** /v1/management/plugins/{plugin_id}/reload | Reload Plugin
 [**ReplaceManagementConfig**](ManagementAPI.md#ReplaceManagementConfig) | **Put** /v1/management/config | Replace Config
+[**UpdateManagementGitHubPlugin**](ManagementAPI.md#UpdateManagementGitHubPlugin) | **Post** /v1/management/plugins/{plugin_id}/update | Update Plugin
 
 
 
@@ -146,6 +152,78 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ManagementConfigResponse**](ManagementConfigResponse.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## DeleteManagementPlugin
+
+> PluginStore DeleteManagementPlugin(ctx, pluginId).IfMatch(ifMatch).Execute()
+
+Delete Plugin
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	pluginId := "pluginId_example" // string | 
+	ifMatch := "ifMatch_example" // string | Current configuration revision (ETag). (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.DeleteManagementPlugin(context.Background(), pluginId).IfMatch(ifMatch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.DeleteManagementPlugin``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `DeleteManagementPlugin`: PluginStore
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.DeleteManagementPlugin`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**pluginId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiDeleteManagementPluginRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **ifMatch** | **string** | Current configuration revision (ETag). | 
+
+### Return type
+
+[**PluginStore**](PluginStore.md)
 
 ### Authorization
 
@@ -483,6 +561,67 @@ Other parameters are passed through a pointer to a apiGetManagementMetricsReques
 [[Back to README]](../README.md)
 
 
+## GetManagementPluginStore
+
+> PluginStore GetManagementPluginStore(ctx).Execute()
+
+Get Store
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.GetManagementPluginStore(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.GetManagementPluginStore``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetManagementPluginStore`: PluginStore
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.GetManagementPluginStore`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetManagementPluginStoreRequest struct via the builder pattern
+
+
+### Return type
+
+[**PluginStore**](PluginStore.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## GetManagementStatus
 
 > ManagementStatus GetManagementStatus(ctx).Execute()
@@ -535,6 +674,74 @@ Other parameters are passed through a pointer to a apiGetManagementStatusRequest
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## InstallManagementGitHubPlugin
+
+> PluginStore InstallManagementGitHubPlugin(ctx).GitHubPluginInstall(gitHubPluginInstall).IfMatch(ifMatch).Execute()
+
+Install Github
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	gitHubPluginInstall := *openapiclient.NewGitHubPluginInstall("Repository_example") // GitHubPluginInstall | 
+	ifMatch := "ifMatch_example" // string | Current configuration revision (ETag). (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.InstallManagementGitHubPlugin(context.Background()).GitHubPluginInstall(gitHubPluginInstall).IfMatch(ifMatch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.InstallManagementGitHubPlugin``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `InstallManagementGitHubPlugin`: PluginStore
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.InstallManagementGitHubPlugin`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiInstallManagementGitHubPluginRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **gitHubPluginInstall** | [**GitHubPluginInstall**](GitHubPluginInstall.md) |  | 
+ **ifMatch** | **string** | Current configuration revision (ETag). | 
+
+### Return type
+
+[**PluginStore**](PluginStore.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
@@ -824,6 +1031,80 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
+## PutManagementPlugin
+
+> PluginStore PutManagementPlugin(ctx, pluginId).PluginOptions(pluginOptions).IfMatch(ifMatch).Execute()
+
+Put Plugin
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	pluginId := "pluginId_example" // string | 
+	pluginOptions := *openapiclient.NewPluginOptions() // PluginOptions | 
+	ifMatch := "ifMatch_example" // string | Current configuration revision (ETag). (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.PutManagementPlugin(context.Background(), pluginId).PluginOptions(pluginOptions).IfMatch(ifMatch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.PutManagementPlugin``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `PutManagementPlugin`: PluginStore
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.PutManagementPlugin`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**pluginId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiPutManagementPluginRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **pluginOptions** | [**PluginOptions**](PluginOptions.md) |  | 
+ **ifMatch** | **string** | Current configuration revision (ETag). | 
+
+### Return type
+
+[**PluginStore**](PluginStore.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## PutManagementProxy
 
 > ManagementConfigResponse PutManagementProxy(ctx, domain).ManagedProxy(managedProxy).IfMatch(ifMatch).Execute()
@@ -896,6 +1177,78 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
+## ReloadManagementPlugin
+
+> PluginStore ReloadManagementPlugin(ctx, pluginId).IfMatch(ifMatch).Execute()
+
+Reload Plugin
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	pluginId := "pluginId_example" // string | 
+	ifMatch := "ifMatch_example" // string | Current configuration revision (ETag). (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.ReloadManagementPlugin(context.Background(), pluginId).IfMatch(ifMatch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.ReloadManagementPlugin``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `ReloadManagementPlugin`: PluginStore
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.ReloadManagementPlugin`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**pluginId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiReloadManagementPluginRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **ifMatch** | **string** | Current configuration revision (ETag). | 
+
+### Return type
+
+[**PluginStore**](PluginStore.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## ReplaceManagementConfig
 
 > ManagementConfigResponse ReplaceManagementConfig(ctx).ManagementConfig(managementConfig).IfMatch(ifMatch).Execute()
@@ -955,6 +1308,78 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
 - **Content-Type**: application/json
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## UpdateManagementGitHubPlugin
+
+> PluginStore UpdateManagementGitHubPlugin(ctx, pluginId).IfMatch(ifMatch).Execute()
+
+Update Plugin
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	pluginId := "pluginId_example" // string | 
+	ifMatch := "ifMatch_example" // string | Current configuration revision (ETag). (optional)
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.UpdateManagementGitHubPlugin(context.Background(), pluginId).IfMatch(ifMatch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.UpdateManagementGitHubPlugin``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `UpdateManagementGitHubPlugin`: PluginStore
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.UpdateManagementGitHubPlugin`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**pluginId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiUpdateManagementGitHubPluginRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **ifMatch** | **string** | Current configuration revision (ETag). | 
+
+### Return type
+
+[**PluginStore**](PluginStore.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
 - **Accept**: application/json, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)

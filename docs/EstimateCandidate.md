@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **EstimatedCost** | Pointer to **NullableFloat32** |  | [optional] 
 **Lifecycle** | Pointer to **string** |  | [optional] [default to "active"]
 **Model** | **string** |  | 
-**Reason** | Pointer to **NullableString** | Why the candidate is not admissible: limits, retired, max_cost, unpriced or budget. | [optional] 
+**Reason** | Pointer to **NullableString** | Why the candidate is not admissible: limits, retired, max_cost, unpriced, budget or plugin_policy. | [optional] 
 
 ## Methods
 

@@ -24,7 +24,7 @@ type EstimateCandidate struct {
 	EstimatedCost NullableFloat32 `json:"estimated_cost,omitempty"`
 	Lifecycle *string `json:"lifecycle,omitempty"`
 	Model string `json:"model"`
-	// Why the candidate is not admissible: limits, retired, max_cost, unpriced or budget.
+	// Why the candidate is not admissible: limits, retired, max_cost, unpriced, budget or plugin_policy.
 	Reason NullableString `json:"reason,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
