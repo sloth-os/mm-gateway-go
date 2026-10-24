@@ -21,7 +21,7 @@ var _ MappedNullable = &ManagementConfigResponse{}
 
 // ManagementConfigResponse struct for ManagementConfigResponse
 type ManagementConfigResponse struct {
-	Config ManagementConfigOutput `json:"config"`
+	Config ManagementConfig `json:"config"`
 	Persistent bool `json:"persistent"`
 	Revision string `json:"revision"`
 }
@@ -32,7 +32,7 @@ type _ManagementConfigResponse ManagementConfigResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewManagementConfigResponse(config ManagementConfigOutput, persistent bool, revision string) *ManagementConfigResponse {
+func NewManagementConfigResponse(config ManagementConfig, persistent bool, revision string) *ManagementConfigResponse {
 	this := ManagementConfigResponse{}
 	this.Config = config
 	this.Persistent = persistent
@@ -49,9 +49,9 @@ func NewManagementConfigResponseWithDefaults() *ManagementConfigResponse {
 }
 
 // GetConfig returns the Config field value
-func (o *ManagementConfigResponse) GetConfig() ManagementConfigOutput {
+func (o *ManagementConfigResponse) GetConfig() ManagementConfig {
 	if o == nil {
-		var ret ManagementConfigOutput
+		var ret ManagementConfig
 		return ret
 	}
 
@@ -60,7 +60,7 @@ func (o *ManagementConfigResponse) GetConfig() ManagementConfigOutput {
 
 // GetConfigOk returns a tuple with the Config field value
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigResponse) GetConfigOk() (*ManagementConfigOutput, bool) {
+func (o *ManagementConfigResponse) GetConfigOk() (*ManagementConfig, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -68,7 +68,7 @@ func (o *ManagementConfigResponse) GetConfigOk() (*ManagementConfigOutput, bool)
 }
 
 // SetConfig sets field value
-func (o *ManagementConfigResponse) SetConfig(v ManagementConfigOutput) {
+func (o *ManagementConfigResponse) SetConfig(v ManagementConfig) {
 	o.Config = v
 }
 

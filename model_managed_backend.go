@@ -25,6 +25,10 @@ type ManagedBackend struct {
 	Credentials []BackendCredential `json:"credentials,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
 	Extra map[string]interface{} `json:"extra,omitempty"`
+	// Public alias to active upstream model id, scoped to this backend.
+	ModelAliases map[string]interface{} `json:"model_aliases,omitempty"`
+	// Active model allowlist by modality. Null uses provider defaults; {} disables all models.
+	Models map[string][]string `json:"models,omitempty"`
 	Name string `json:"name" validate:"regexp=^[A-Za-z0-9][A-Za-z0-9_.:-]{0\\,127}$"`
 	Tags []string `json:"tags,omitempty"`
 	Type string `json:"type"`
@@ -236,6 +240,71 @@ func (o *ManagedBackend) SetExtra(v map[string]interface{}) {
 	o.Extra = v
 }
 
+// GetModelAliases returns the ModelAliases field value if set, zero value otherwise.
+func (o *ManagedBackend) GetModelAliases() map[string]interface{} {
+	if o == nil || IsNil(o.ModelAliases) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.ModelAliases
+}
+
+// GetModelAliasesOk returns a tuple with the ModelAliases field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ManagedBackend) GetModelAliasesOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.ModelAliases) {
+		return map[string]interface{}{}, false
+	}
+	return o.ModelAliases, true
+}
+
+// HasModelAliases returns a boolean if a field has been set.
+func (o *ManagedBackend) HasModelAliases() bool {
+	if o != nil && !IsNil(o.ModelAliases) {
+		return true
+	}
+
+	return false
+}
+
+// SetModelAliases gets a reference to the given map[string]interface{} and assigns it to the ModelAliases field.
+func (o *ManagedBackend) SetModelAliases(v map[string]interface{}) {
+	o.ModelAliases = v
+}
+
+// GetModels returns the Models field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ManagedBackend) GetModels() map[string][]string {
+	if o == nil {
+		var ret map[string][]string
+		return ret
+	}
+	return o.Models
+}
+
+// GetModelsOk returns a tuple with the Models field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ManagedBackend) GetModelsOk() (map[string][]string, bool) {
+	if o == nil || IsNil(o.Models) {
+		return map[string][]string{}, false
+	}
+	return o.Models, true
+}
+
+// HasModels returns a boolean if a field has been set.
+func (o *ManagedBackend) HasModels() bool {
+	if o != nil && !IsNil(o.Models) {
+		return true
+	}
+
+	return false
+}
+
+// SetModels gets a reference to the given map[string][]string and assigns it to the Models field.
+func (o *ManagedBackend) SetModels(v map[string][]string) {
+	o.Models = v
+}
+
 // GetName returns the Name field value
 func (o *ManagedBackend) GetName() string {
 	if o == nil {
@@ -341,6 +410,12 @@ func (o ManagedBackend) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Extra) {
 		toSerialize["extra"] = o.Extra
 	}
+	if !IsNil(o.ModelAliases) {
+		toSerialize["model_aliases"] = o.ModelAliases
+	}
+	if o.Models != nil {
+		toSerialize["models"] = o.Models
+	}
 	toSerialize["name"] = o.Name
 	if !IsNil(o.Tags) {
 		toSerialize["tags"] = o.Tags
@@ -395,6 +470,8 @@ func (o *ManagedBackend) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "credentials")
 		delete(additionalProperties, "enabled")
 		delete(additionalProperties, "extra")
+		delete(additionalProperties, "model_aliases")
+		delete(additionalProperties, "models")
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "tags")
 		delete(additionalProperties, "type")

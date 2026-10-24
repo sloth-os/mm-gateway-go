@@ -14,11 +14,11 @@ import (
 	"encoding/json"
 )
 
-// checks if the ManagementConfigOutput type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ManagementConfigOutput{}
+// checks if the ManagementConfig type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ManagementConfig{}
 
-// ManagementConfigOutput struct for ManagementConfigOutput
-type ManagementConfigOutput struct {
+// ManagementConfig struct for ManagementConfig
+type ManagementConfig struct {
 	Backends []ManagedBackend `json:"backends,omitempty"`
 	BudgetAllowUnpriced *bool `json:"budget_allow_unpriced,omitempty"`
 	CatalogModels map[string]interface{} `json:"catalog_models,omitempty"`
@@ -27,14 +27,17 @@ type ManagementConfigOutput struct {
 	Proxies []ManagedProxy `json:"proxies,omitempty"`
 	RoutingDefaultOptimize *string `json:"routing_default_optimize,omitempty"`
 	RoutingProfiles map[string]ManagedRoutingProfile `json:"routing_profiles,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
-// NewManagementConfigOutput instantiates a new ManagementConfigOutput object
+type _ManagementConfig ManagementConfig
+
+// NewManagementConfig instantiates a new ManagementConfig object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewManagementConfigOutput() *ManagementConfigOutput {
-	this := ManagementConfigOutput{}
+func NewManagementConfig() *ManagementConfig {
+	this := ManagementConfig{}
 	var budgetAllowUnpriced bool = false
 	this.BudgetAllowUnpriced = &budgetAllowUnpriced
 	var routingDefaultOptimize string = "balanced"
@@ -42,11 +45,11 @@ func NewManagementConfigOutput() *ManagementConfigOutput {
 	return &this
 }
 
-// NewManagementConfigOutputWithDefaults instantiates a new ManagementConfigOutput object
+// NewManagementConfigWithDefaults instantiates a new ManagementConfig object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewManagementConfigOutputWithDefaults() *ManagementConfigOutput {
-	this := ManagementConfigOutput{}
+func NewManagementConfigWithDefaults() *ManagementConfig {
+	this := ManagementConfig{}
 	var budgetAllowUnpriced bool = false
 	this.BudgetAllowUnpriced = &budgetAllowUnpriced
 	var routingDefaultOptimize string = "balanced"
@@ -55,7 +58,7 @@ func NewManagementConfigOutputWithDefaults() *ManagementConfigOutput {
 }
 
 // GetBackends returns the Backends field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetBackends() []ManagedBackend {
+func (o *ManagementConfig) GetBackends() []ManagedBackend {
 	if o == nil || IsNil(o.Backends) {
 		var ret []ManagedBackend
 		return ret
@@ -65,7 +68,7 @@ func (o *ManagementConfigOutput) GetBackends() []ManagedBackend {
 
 // GetBackendsOk returns a tuple with the Backends field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetBackendsOk() ([]ManagedBackend, bool) {
+func (o *ManagementConfig) GetBackendsOk() ([]ManagedBackend, bool) {
 	if o == nil || IsNil(o.Backends) {
 		return nil, false
 	}
@@ -73,7 +76,7 @@ func (o *ManagementConfigOutput) GetBackendsOk() ([]ManagedBackend, bool) {
 }
 
 // HasBackends returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasBackends() bool {
+func (o *ManagementConfig) HasBackends() bool {
 	if o != nil && !IsNil(o.Backends) {
 		return true
 	}
@@ -82,12 +85,12 @@ func (o *ManagementConfigOutput) HasBackends() bool {
 }
 
 // SetBackends gets a reference to the given []ManagedBackend and assigns it to the Backends field.
-func (o *ManagementConfigOutput) SetBackends(v []ManagedBackend) {
+func (o *ManagementConfig) SetBackends(v []ManagedBackend) {
 	o.Backends = v
 }
 
 // GetBudgetAllowUnpriced returns the BudgetAllowUnpriced field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetBudgetAllowUnpriced() bool {
+func (o *ManagementConfig) GetBudgetAllowUnpriced() bool {
 	if o == nil || IsNil(o.BudgetAllowUnpriced) {
 		var ret bool
 		return ret
@@ -97,7 +100,7 @@ func (o *ManagementConfigOutput) GetBudgetAllowUnpriced() bool {
 
 // GetBudgetAllowUnpricedOk returns a tuple with the BudgetAllowUnpriced field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetBudgetAllowUnpricedOk() (*bool, bool) {
+func (o *ManagementConfig) GetBudgetAllowUnpricedOk() (*bool, bool) {
 	if o == nil || IsNil(o.BudgetAllowUnpriced) {
 		return nil, false
 	}
@@ -105,7 +108,7 @@ func (o *ManagementConfigOutput) GetBudgetAllowUnpricedOk() (*bool, bool) {
 }
 
 // HasBudgetAllowUnpriced returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasBudgetAllowUnpriced() bool {
+func (o *ManagementConfig) HasBudgetAllowUnpriced() bool {
 	if o != nil && !IsNil(o.BudgetAllowUnpriced) {
 		return true
 	}
@@ -114,12 +117,12 @@ func (o *ManagementConfigOutput) HasBudgetAllowUnpriced() bool {
 }
 
 // SetBudgetAllowUnpriced gets a reference to the given bool and assigns it to the BudgetAllowUnpriced field.
-func (o *ManagementConfigOutput) SetBudgetAllowUnpriced(v bool) {
+func (o *ManagementConfig) SetBudgetAllowUnpriced(v bool) {
 	o.BudgetAllowUnpriced = &v
 }
 
 // GetCatalogModels returns the CatalogModels field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetCatalogModels() map[string]interface{} {
+func (o *ManagementConfig) GetCatalogModels() map[string]interface{} {
 	if o == nil || IsNil(o.CatalogModels) {
 		var ret map[string]interface{}
 		return ret
@@ -129,7 +132,7 @@ func (o *ManagementConfigOutput) GetCatalogModels() map[string]interface{} {
 
 // GetCatalogModelsOk returns a tuple with the CatalogModels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetCatalogModelsOk() (map[string]interface{}, bool) {
+func (o *ManagementConfig) GetCatalogModelsOk() (map[string]interface{}, bool) {
 	if o == nil || IsNil(o.CatalogModels) {
 		return map[string]interface{}{}, false
 	}
@@ -137,7 +140,7 @@ func (o *ManagementConfigOutput) GetCatalogModelsOk() (map[string]interface{}, b
 }
 
 // HasCatalogModels returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasCatalogModels() bool {
+func (o *ManagementConfig) HasCatalogModels() bool {
 	if o != nil && !IsNil(o.CatalogModels) {
 		return true
 	}
@@ -146,12 +149,12 @@ func (o *ManagementConfigOutput) HasCatalogModels() bool {
 }
 
 // SetCatalogModels gets a reference to the given map[string]interface{} and assigns it to the CatalogModels field.
-func (o *ManagementConfigOutput) SetCatalogModels(v map[string]interface{}) {
+func (o *ManagementConfig) SetCatalogModels(v map[string]interface{}) {
 	o.CatalogModels = v
 }
 
 // GetKeys returns the Keys field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetKeys() []ManagedKey {
+func (o *ManagementConfig) GetKeys() []ManagedKey {
 	if o == nil || IsNil(o.Keys) {
 		var ret []ManagedKey
 		return ret
@@ -161,7 +164,7 @@ func (o *ManagementConfigOutput) GetKeys() []ManagedKey {
 
 // GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetKeysOk() ([]ManagedKey, bool) {
+func (o *ManagementConfig) GetKeysOk() ([]ManagedKey, bool) {
 	if o == nil || IsNil(o.Keys) {
 		return nil, false
 	}
@@ -169,7 +172,7 @@ func (o *ManagementConfigOutput) GetKeysOk() ([]ManagedKey, bool) {
 }
 
 // HasKeys returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasKeys() bool {
+func (o *ManagementConfig) HasKeys() bool {
 	if o != nil && !IsNil(o.Keys) {
 		return true
 	}
@@ -178,12 +181,12 @@ func (o *ManagementConfigOutput) HasKeys() bool {
 }
 
 // SetKeys gets a reference to the given []ManagedKey and assigns it to the Keys field.
-func (o *ManagementConfigOutput) SetKeys(v []ManagedKey) {
+func (o *ManagementConfig) SetKeys(v []ManagedKey) {
 	o.Keys = v
 }
 
 // GetOutboundProxy returns the OutboundProxy field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ManagementConfigOutput) GetOutboundProxy() string {
+func (o *ManagementConfig) GetOutboundProxy() string {
 	if o == nil || IsNil(o.OutboundProxy.Get()) {
 		var ret string
 		return ret
@@ -194,7 +197,7 @@ func (o *ManagementConfigOutput) GetOutboundProxy() string {
 // GetOutboundProxyOk returns a tuple with the OutboundProxy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ManagementConfigOutput) GetOutboundProxyOk() (*string, bool) {
+func (o *ManagementConfig) GetOutboundProxyOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -202,7 +205,7 @@ func (o *ManagementConfigOutput) GetOutboundProxyOk() (*string, bool) {
 }
 
 // HasOutboundProxy returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasOutboundProxy() bool {
+func (o *ManagementConfig) HasOutboundProxy() bool {
 	if o != nil && o.OutboundProxy.IsSet() {
 		return true
 	}
@@ -211,21 +214,21 @@ func (o *ManagementConfigOutput) HasOutboundProxy() bool {
 }
 
 // SetOutboundProxy gets a reference to the given NullableString and assigns it to the OutboundProxy field.
-func (o *ManagementConfigOutput) SetOutboundProxy(v string) {
+func (o *ManagementConfig) SetOutboundProxy(v string) {
 	o.OutboundProxy.Set(&v)
 }
 // SetOutboundProxyNil sets the value for OutboundProxy to be an explicit nil
-func (o *ManagementConfigOutput) SetOutboundProxyNil() {
+func (o *ManagementConfig) SetOutboundProxyNil() {
 	o.OutboundProxy.Set(nil)
 }
 
 // UnsetOutboundProxy ensures that no value is present for OutboundProxy, not even an explicit nil
-func (o *ManagementConfigOutput) UnsetOutboundProxy() {
+func (o *ManagementConfig) UnsetOutboundProxy() {
 	o.OutboundProxy.Unset()
 }
 
 // GetProxies returns the Proxies field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetProxies() []ManagedProxy {
+func (o *ManagementConfig) GetProxies() []ManagedProxy {
 	if o == nil || IsNil(o.Proxies) {
 		var ret []ManagedProxy
 		return ret
@@ -235,7 +238,7 @@ func (o *ManagementConfigOutput) GetProxies() []ManagedProxy {
 
 // GetProxiesOk returns a tuple with the Proxies field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetProxiesOk() ([]ManagedProxy, bool) {
+func (o *ManagementConfig) GetProxiesOk() ([]ManagedProxy, bool) {
 	if o == nil || IsNil(o.Proxies) {
 		return nil, false
 	}
@@ -243,7 +246,7 @@ func (o *ManagementConfigOutput) GetProxiesOk() ([]ManagedProxy, bool) {
 }
 
 // HasProxies returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasProxies() bool {
+func (o *ManagementConfig) HasProxies() bool {
 	if o != nil && !IsNil(o.Proxies) {
 		return true
 	}
@@ -252,12 +255,12 @@ func (o *ManagementConfigOutput) HasProxies() bool {
 }
 
 // SetProxies gets a reference to the given []ManagedProxy and assigns it to the Proxies field.
-func (o *ManagementConfigOutput) SetProxies(v []ManagedProxy) {
+func (o *ManagementConfig) SetProxies(v []ManagedProxy) {
 	o.Proxies = v
 }
 
 // GetRoutingDefaultOptimize returns the RoutingDefaultOptimize field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetRoutingDefaultOptimize() string {
+func (o *ManagementConfig) GetRoutingDefaultOptimize() string {
 	if o == nil || IsNil(o.RoutingDefaultOptimize) {
 		var ret string
 		return ret
@@ -267,7 +270,7 @@ func (o *ManagementConfigOutput) GetRoutingDefaultOptimize() string {
 
 // GetRoutingDefaultOptimizeOk returns a tuple with the RoutingDefaultOptimize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetRoutingDefaultOptimizeOk() (*string, bool) {
+func (o *ManagementConfig) GetRoutingDefaultOptimizeOk() (*string, bool) {
 	if o == nil || IsNil(o.RoutingDefaultOptimize) {
 		return nil, false
 	}
@@ -275,7 +278,7 @@ func (o *ManagementConfigOutput) GetRoutingDefaultOptimizeOk() (*string, bool) {
 }
 
 // HasRoutingDefaultOptimize returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasRoutingDefaultOptimize() bool {
+func (o *ManagementConfig) HasRoutingDefaultOptimize() bool {
 	if o != nil && !IsNil(o.RoutingDefaultOptimize) {
 		return true
 	}
@@ -284,12 +287,12 @@ func (o *ManagementConfigOutput) HasRoutingDefaultOptimize() bool {
 }
 
 // SetRoutingDefaultOptimize gets a reference to the given string and assigns it to the RoutingDefaultOptimize field.
-func (o *ManagementConfigOutput) SetRoutingDefaultOptimize(v string) {
+func (o *ManagementConfig) SetRoutingDefaultOptimize(v string) {
 	o.RoutingDefaultOptimize = &v
 }
 
 // GetRoutingProfiles returns the RoutingProfiles field value if set, zero value otherwise.
-func (o *ManagementConfigOutput) GetRoutingProfiles() map[string]ManagedRoutingProfile {
+func (o *ManagementConfig) GetRoutingProfiles() map[string]ManagedRoutingProfile {
 	if o == nil || IsNil(o.RoutingProfiles) {
 		var ret map[string]ManagedRoutingProfile
 		return ret
@@ -299,7 +302,7 @@ func (o *ManagementConfigOutput) GetRoutingProfiles() map[string]ManagedRoutingP
 
 // GetRoutingProfilesOk returns a tuple with the RoutingProfiles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ManagementConfigOutput) GetRoutingProfilesOk() (map[string]ManagedRoutingProfile, bool) {
+func (o *ManagementConfig) GetRoutingProfilesOk() (map[string]ManagedRoutingProfile, bool) {
 	if o == nil || IsNil(o.RoutingProfiles) {
 		return map[string]ManagedRoutingProfile{}, false
 	}
@@ -307,7 +310,7 @@ func (o *ManagementConfigOutput) GetRoutingProfilesOk() (map[string]ManagedRouti
 }
 
 // HasRoutingProfiles returns a boolean if a field has been set.
-func (o *ManagementConfigOutput) HasRoutingProfiles() bool {
+func (o *ManagementConfig) HasRoutingProfiles() bool {
 	if o != nil && !IsNil(o.RoutingProfiles) {
 		return true
 	}
@@ -316,11 +319,11 @@ func (o *ManagementConfigOutput) HasRoutingProfiles() bool {
 }
 
 // SetRoutingProfiles gets a reference to the given map[string]ManagedRoutingProfile and assigns it to the RoutingProfiles field.
-func (o *ManagementConfigOutput) SetRoutingProfiles(v map[string]ManagedRoutingProfile) {
+func (o *ManagementConfig) SetRoutingProfiles(v map[string]ManagedRoutingProfile) {
 	o.RoutingProfiles = v
 }
 
-func (o ManagementConfigOutput) MarshalJSON() ([]byte, error) {
+func (o ManagementConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -328,7 +331,7 @@ func (o ManagementConfigOutput) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ManagementConfigOutput) ToMap() (map[string]interface{}, error) {
+func (o ManagementConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Backends) {
 		toSerialize["backends"] = o.Backends
@@ -354,41 +357,74 @@ func (o ManagementConfigOutput) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.RoutingProfiles) {
 		toSerialize["routing_profiles"] = o.RoutingProfiles
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
-type NullableManagementConfigOutput struct {
-	value *ManagementConfigOutput
+func (o *ManagementConfig) UnmarshalJSON(data []byte) (err error) {
+	varManagementConfig := _ManagementConfig{}
+
+	err = json.Unmarshal(data, &varManagementConfig)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ManagementConfig(varManagementConfig)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "backends")
+		delete(additionalProperties, "budget_allow_unpriced")
+		delete(additionalProperties, "catalog_models")
+		delete(additionalProperties, "keys")
+		delete(additionalProperties, "outbound_proxy")
+		delete(additionalProperties, "proxies")
+		delete(additionalProperties, "routing_default_optimize")
+		delete(additionalProperties, "routing_profiles")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
+}
+
+type NullableManagementConfig struct {
+	value *ManagementConfig
 	isSet bool
 }
 
-func (v NullableManagementConfigOutput) Get() *ManagementConfigOutput {
+func (v NullableManagementConfig) Get() *ManagementConfig {
 	return v.value
 }
 
-func (v *NullableManagementConfigOutput) Set(val *ManagementConfigOutput) {
+func (v *NullableManagementConfig) Set(val *ManagementConfig) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableManagementConfigOutput) IsSet() bool {
+func (v NullableManagementConfig) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableManagementConfigOutput) Unset() {
+func (v *NullableManagementConfig) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableManagementConfigOutput(val *ManagementConfigOutput) *NullableManagementConfigOutput {
-	return &NullableManagementConfigOutput{value: val, isSet: true}
+func NewNullableManagementConfig(val *ManagementConfig) *NullableManagementConfig {
+	return &NullableManagementConfig{value: val, isSet: true}
 }
 
-func (v NullableManagementConfigOutput) MarshalJSON() ([]byte, error) {
+func (v NullableManagementConfig) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableManagementConfigOutput) UnmarshalJSON(src []byte) error {
+func (v *NullableManagementConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

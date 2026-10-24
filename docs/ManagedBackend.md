@@ -9,6 +9,8 @@ Name | Type | Description | Notes
 **Credentials** | Pointer to [**[]BackendCredential**](BackendCredential.md) |  | [optional] 
 **Enabled** | Pointer to **bool** |  | [optional] [default to true]
 **Extra** | Pointer to **map[string]interface{}** |  | [optional] 
+**ModelAliases** | Pointer to **map[string]interface{}** | Public alias to active upstream model id, scoped to this backend. | [optional] 
+**Models** | Pointer to **map[string][]string** | Active model allowlist by modality. Null uses provider defaults; {} disables all models. | [optional] 
 **Name** | **string** |  | 
 **Tags** | Pointer to **[]string** |  | [optional] 
 **Type** | **string** |  | 
@@ -177,6 +179,66 @@ SetExtra sets Extra field to given value.
 
 HasExtra returns a boolean if a field has been set.
 
+### GetModelAliases
+
+`func (o *ManagedBackend) GetModelAliases() map[string]interface{}`
+
+GetModelAliases returns the ModelAliases field if non-nil, zero value otherwise.
+
+### GetModelAliasesOk
+
+`func (o *ManagedBackend) GetModelAliasesOk() (*map[string]interface{}, bool)`
+
+GetModelAliasesOk returns a tuple with the ModelAliases field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetModelAliases
+
+`func (o *ManagedBackend) SetModelAliases(v map[string]interface{})`
+
+SetModelAliases sets ModelAliases field to given value.
+
+### HasModelAliases
+
+`func (o *ManagedBackend) HasModelAliases() bool`
+
+HasModelAliases returns a boolean if a field has been set.
+
+### GetModels
+
+`func (o *ManagedBackend) GetModels() map[string][]string`
+
+GetModels returns the Models field if non-nil, zero value otherwise.
+
+### GetModelsOk
+
+`func (o *ManagedBackend) GetModelsOk() (*map[string][]string, bool)`
+
+GetModelsOk returns a tuple with the Models field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetModels
+
+`func (o *ManagedBackend) SetModels(v map[string][]string)`
+
+SetModels sets Models field to given value.
+
+### HasModels
+
+`func (o *ManagedBackend) HasModels() bool`
+
+HasModels returns a boolean if a field has been set.
+
+### SetModelsNil
+
+`func (o *ManagedBackend) SetModelsNil(b bool)`
+
+ SetModelsNil sets the value for Models to be an explicit nil
+
+### UnsetModels
+`func (o *ManagedBackend) UnsetModels()`
+
+UnsetModels ensures that no value is present for Models, not even an explicit nil
 ### GetName
 
 `func (o *ManagedBackend) GetName() string`

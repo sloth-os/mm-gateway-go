@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Config** | [**ManagementConfigOutput**](ManagementConfigOutput.md) |  | 
+**Config** | [**ManagementConfig**](ManagementConfig.md) |  | 
 **Persistent** | **bool** |  | 
 **Revision** | **string** |  | 
 
@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 
 ### NewManagementConfigResponse
 
-`func NewManagementConfigResponse(config ManagementConfigOutput, persistent bool, revision string, ) *ManagementConfigResponse`
+`func NewManagementConfigResponse(config ManagementConfig, persistent bool, revision string, ) *ManagementConfigResponse`
 
 NewManagementConfigResponse instantiates a new ManagementConfigResponse object
 This constructor will assign default values to properties that have it defined,
@@ -29,20 +29,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetConfig
 
-`func (o *ManagementConfigResponse) GetConfig() ManagementConfigOutput`
+`func (o *ManagementConfigResponse) GetConfig() ManagementConfig`
 
 GetConfig returns the Config field if non-nil, zero value otherwise.
 
 ### GetConfigOk
 
-`func (o *ManagementConfigResponse) GetConfigOk() (*ManagementConfigOutput, bool)`
+`func (o *ManagementConfigResponse) GetConfigOk() (*ManagementConfig, bool)`
 
 GetConfigOk returns a tuple with the Config field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetConfig
 
-`func (o *ManagementConfigResponse) SetConfig(v ManagementConfigOutput)`
+`func (o *ManagementConfigResponse) SetConfig(v ManagementConfig)`
 
 SetConfig sets Config field to given value.
 

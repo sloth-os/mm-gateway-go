@@ -7,6 +7,8 @@ Method | HTTP request | Description
 [**DeleteManagementBackend**](ManagementAPI.md#DeleteManagementBackend) | **Delete** /v1/management/backends/{name} | Delete Backend
 [**DeleteManagementKey**](ManagementAPI.md#DeleteManagementKey) | **Delete** /v1/management/keys/{key_id} | Delete Key
 [**DeleteManagementProxy**](ManagementAPI.md#DeleteManagementProxy) | **Delete** /v1/management/proxies/{domain} | Delete Proxy
+[**DiscoverManagementBackendModels**](ManagementAPI.md#DiscoverManagementBackendModels) | **Post** /v1/management/backends/discover-models | Discover Backend Models
+[**GetManagementBuiltinModels**](ManagementAPI.md#GetManagementBuiltinModels) | **Get** /v1/management/backend-types/{provider_type}/models | Get Builtin Models
 [**GetManagementConfig**](ManagementAPI.md#GetManagementConfig) | **Get** /v1/management/config | Get Config
 [**GetManagementMetrics**](ManagementAPI.md#GetManagementMetrics) | **Get** /v1/management/metrics | Get Metrics
 [**GetManagementStatus**](ManagementAPI.md#GetManagementStatus) | **Get** /v1/management/status | Get Status
@@ -214,6 +216,140 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ManagementConfigResponse**](ManagementConfigResponse.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## DiscoverManagementBackendModels
+
+> BackendModelDiscovery DiscoverManagementBackendModels(ctx).ManagedBackend(managedBackend).Execute()
+
+Discover Backend Models
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	managedBackend := *openapiclient.NewManagedBackend("Name_example", "Type_example") // ManagedBackend | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.DiscoverManagementBackendModels(context.Background()).ManagedBackend(managedBackend).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.DiscoverManagementBackendModels``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `DiscoverManagementBackendModels`: BackendModelDiscovery
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.DiscoverManagementBackendModels`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiDiscoverManagementBackendModelsRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **managedBackend** | [**ManagedBackend**](ManagedBackend.md) |  | 
+
+### Return type
+
+[**BackendModelDiscovery**](BackendModelDiscovery.md)
+
+### Authorization
+
+[ManagementAuth](../README.md#ManagementAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## GetManagementBuiltinModels
+
+> BackendModelCatalog GetManagementBuiltinModels(ctx, providerType).Execute()
+
+Get Builtin Models
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/sloth-os/mm-gateway-go"
+)
+
+func main() {
+	providerType := "providerType_example" // string | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.ManagementAPI.GetManagementBuiltinModels(context.Background(), providerType).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.GetManagementBuiltinModels``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetManagementBuiltinModels`: BackendModelCatalog
+	fmt.Fprintf(os.Stdout, "Response from `ManagementAPI.GetManagementBuiltinModels`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**providerType** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetManagementBuiltinModelsRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+### Return type
+
+[**BackendModelCatalog**](BackendModelCatalog.md)
 
 ### Authorization
 
@@ -762,7 +898,7 @@ Name | Type | Description  | Notes
 
 ## ReplaceManagementConfig
 
-> ManagementConfigResponse ReplaceManagementConfig(ctx).ManagementConfigInput(managementConfigInput).IfMatch(ifMatch).Execute()
+> ManagementConfigResponse ReplaceManagementConfig(ctx).ManagementConfig(managementConfig).IfMatch(ifMatch).Execute()
 
 Replace Config
 
@@ -779,12 +915,12 @@ import (
 )
 
 func main() {
-	managementConfigInput := *openapiclient.NewManagementConfigInput() // ManagementConfigInput | 
+	managementConfig := *openapiclient.NewManagementConfig() // ManagementConfig | 
 	ifMatch := "ifMatch_example" // string | Current configuration revision (ETag). (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.ManagementAPI.ReplaceManagementConfig(context.Background()).ManagementConfigInput(managementConfigInput).IfMatch(ifMatch).Execute()
+	resp, r, err := apiClient.ManagementAPI.ReplaceManagementConfig(context.Background()).ManagementConfig(managementConfig).IfMatch(ifMatch).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ManagementAPI.ReplaceManagementConfig``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -805,7 +941,7 @@ Other parameters are passed through a pointer to a apiReplaceManagementConfigReq
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **managementConfigInput** | [**ManagementConfigInput**](ManagementConfigInput.md) |  | 
+ **managementConfig** | [**ManagementConfig**](ManagementConfig.md) |  | 
  **ifMatch** | **string** | Current configuration revision (ETag). | 
 
 ### Return type
