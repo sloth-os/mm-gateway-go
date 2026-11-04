@@ -20,6 +20,7 @@ var _ MappedNullable = &RoutingInfo{}
 
 // RoutingInfo How auto mode served a task (docs/design/auto-mode.md#fallbacks).
 type RoutingInfo struct {
+	Adjustments []RoutingAdjustment `json:"adjustments,omitempty"`
 	Attempts *int32 `json:"attempts,omitempty"`
 	Budget NullableBudgetState `json:"budget,omitempty"`
 	EstimatedCost NullableFloat32 `json:"estimated_cost,omitempty"`
@@ -60,6 +61,38 @@ func NewRoutingInfoWithDefaults() *RoutingInfo {
 	var optimize string = "balanced"
 	this.Optimize = &optimize
 	return &this
+}
+
+// GetAdjustments returns the Adjustments field value if set, zero value otherwise.
+func (o *RoutingInfo) GetAdjustments() []RoutingAdjustment {
+	if o == nil || IsNil(o.Adjustments) {
+		var ret []RoutingAdjustment
+		return ret
+	}
+	return o.Adjustments
+}
+
+// GetAdjustmentsOk returns a tuple with the Adjustments field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutingInfo) GetAdjustmentsOk() ([]RoutingAdjustment, bool) {
+	if o == nil || IsNil(o.Adjustments) {
+		return nil, false
+	}
+	return o.Adjustments, true
+}
+
+// HasAdjustments returns a boolean if a field has been set.
+func (o *RoutingInfo) HasAdjustments() bool {
+	if o != nil && !IsNil(o.Adjustments) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdjustments gets a reference to the given []RoutingAdjustment and assigns it to the Adjustments field.
+func (o *RoutingInfo) SetAdjustments(v []RoutingAdjustment) {
+	o.Adjustments = v
 }
 
 // GetAttempts returns the Attempts field value if set, zero value otherwise.
@@ -318,6 +351,9 @@ func (o RoutingInfo) MarshalJSON() ([]byte, error) {
 
 func (o RoutingInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Adjustments) {
+		toSerialize["adjustments"] = o.Adjustments
+	}
 	if !IsNil(o.Attempts) {
 		toSerialize["attempts"] = o.Attempts
 	}
@@ -380,6 +416,7 @@ func (o *RoutingInfo) UnmarshalJSON(data []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "adjustments")
 		delete(additionalProperties, "attempts")
 		delete(additionalProperties, "budget")
 		delete(additionalProperties, "estimated_cost")

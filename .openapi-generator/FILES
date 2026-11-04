@@ -80,6 +80,7 @@ docs/ProxyAPI.md
 docs/ProxyAccount.md
 docs/ProxyRuntime.md
 docs/ResourceLinks.md
+docs/RoutingAdjustment.md
 docs/RoutingDirective.md
 docs/RoutingInfo.md
 docs/SelectionHealth.md
@@ -167,6 +168,7 @@ model_problem_detail.go
 model_proxy_account.go
 model_proxy_runtime.go
 model_resource_links.go
+model_routing_adjustment.go
 model_routing_directive.go
 model_routing_info.go
 model_selection_health.go

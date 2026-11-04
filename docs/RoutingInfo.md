@@ -4,6 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**Adjustments** | Pointer to [**[]RoutingAdjustment**](RoutingAdjustment.md) |  | [optional] 
 **Attempts** | Pointer to **int32** |  | [optional] [default to 1]
 **Budget** | Pointer to [**NullableBudgetState**](BudgetState.md) |  | [optional] 
 **EstimatedCost** | Pointer to **NullableFloat32** |  | [optional] 
@@ -30,6 +31,31 @@ will change when the set of required properties is changed
 NewRoutingInfoWithDefaults instantiates a new RoutingInfo object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetAdjustments
+
+`func (o *RoutingInfo) GetAdjustments() []RoutingAdjustment`
+
+GetAdjustments returns the Adjustments field if non-nil, zero value otherwise.
+
+### GetAdjustmentsOk
+
+`func (o *RoutingInfo) GetAdjustmentsOk() (*[]RoutingAdjustment, bool)`
+
+GetAdjustmentsOk returns a tuple with the Adjustments field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAdjustments
+
+`func (o *RoutingInfo) SetAdjustments(v []RoutingAdjustment)`
+
+SetAdjustments sets Adjustments field to given value.
+
+### HasAdjustments
+
+`func (o *RoutingInfo) HasAdjustments() bool`
+
+HasAdjustments returns a boolean if a field has been set.
 
 ### GetAttempts
 

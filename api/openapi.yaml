@@ -10422,6 +10422,27 @@ components:
       required:
       - self
       title: ResourceLinks
+    RoutingAdjustment:
+      additionalProperties: true
+      description: What the backend that served a task could not carry as asked (docs/design/unification.md#best-effort).
+      properties:
+        action:
+          enum:
+          - merged
+          - translated
+          - dropped
+          title: Action
+          type: string
+        detail:
+          nullable: true
+          type: string
+        parameter:
+          title: Parameter
+          type: string
+      required:
+      - action
+      - parameter
+      title: RoutingAdjustment
     RoutingDirective:
       additionalProperties: false
       description: |-
@@ -10470,6 +10491,12 @@ components:
       additionalProperties: true
       description: How auto mode served a task (docs/design/auto-mode.md#fallbacks).
       properties:
+        adjustments:
+          items:
+            $ref: "#/components/schemas/RoutingAdjustment"
+          title: Adjustments
+          type: array
+          default: null
         attempts:
           default: 1
           title: Attempts
